@@ -1,6 +1,7 @@
 # Analyzing Trump's Tweets Using Natural Language Processing
 In this project, I will be analyzing over 50,000 of Donald Trump's tweets using Python and Natural Language Processing (NLP) techniques. Thankfully, [The Trump Archive](https://www.thetrumparchive.com) has provided an open-source API dedicated entirely to Donald Trump's tweets, and we will be using this dataset to perform our analysis today. 
 
+![]({{site.baseurl}}/https://github.com/naingthet/trump-tweets-nlp/blob/gh-pages/trump_twitter_analysis_files/trump_twitter_analysis_87_0.png)
 # Setup
 
 ## Imports
