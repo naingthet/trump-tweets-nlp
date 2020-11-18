@@ -1,13 +1,12 @@
 # Analyzing Trump's Tweets Using Natural Language Processing
 In this project, I will be analyzing over 50,000 of Donald Trump's tweets using Python and Natural Language Processing (NLP) techniques. Thankfully, [The Trump Archive](https://www.thetrumparchive.com) has provided an open-source API dedicated entirely to Donald Trump's tweets, and we will be using this dataset to perform our analysis today. 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_87_0.png)
 # Setup
 
 ## Imports
 
 
-```
+```python
 # Working with dates
 from datetime import datetime as dt
 from pytz import timezone
@@ -46,120 +45,124 @@ import warnings
 warnings.filterwarnings('ignore')
 ```
 
-    [nltk_data] Downloading package stopwords to /root/nltk_data...
+    [nltk_data] Downloading package stopwords to
+    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
     [nltk_data]   Package stopwords is already up-to-date!
-    [nltk_data] Downloading package punkt to /root/nltk_data...
+    [nltk_data] Downloading package punkt to
+    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
     [nltk_data]   Package punkt is already up-to-date!
-    [nltk_data] Downloading package wordnet to /root/nltk_data...
+    [nltk_data] Downloading package wordnet to
+    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
     [nltk_data]   Package wordnet is already up-to-date!
-    [nltk_data] Downloading package vader_lexicon to /root/nltk_data...
-    [nltk_data]   Package vader_lexicon is already up-to-date!
+    [nltk_data] Downloading package vader_lexicon to
+    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
     
 
 ## Loading the Data
 
 
-```
+```python
 url = "https://raw.githubusercontent.com/naingthet/twitter-nlp/main/trump_tweets.csv?token=ARUU4WFK6DI5K7PZBZ5F52K7WRGN6"
 trump_tweets = pd.read_csv(url, parse_dates=True)
 trump_tweets.head()
 ```
 
 
+    ---------------------------------------------------------------------------
+
+    HTTPError                                 Traceback (most recent call last)
+
+    <ipython-input-2-7a51e6d08fac> in <module>
+          1 url = "https://raw.githubusercontent.com/naingthet/twitter-nlp/main/trump_tweets.csv?token=ARUU4WFK6DI5K7PZBZ5F52K7WRGN6"
+    ----> 2 trump_tweets = pd.read_csv(url, parse_dates=True)
+          3 trump_tweets.head()
+    
+
+    ~\anaconda3\lib\site-packages\pandas\io\parsers.py in parser_f(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, squeeze, prefix, mangle_dupe_cols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, dialect, error_bad_lines, warn_bad_lines, delim_whitespace, low_memory, memory_map, float_precision)
+        674         )
+        675 
+    --> 676         return _read(filepath_or_buffer, kwds)
+        677 
+        678     parser_f.__name__ = name
+    
+
+    ~\anaconda3\lib\site-packages\pandas\io\parsers.py in _read(filepath_or_buffer, kwds)
+        428     # though mypy handling of conditional imports is difficult.
+        429     # See https://github.com/python/mypy/issues/1297
+    --> 430     fp_or_buf, _, compression, should_close = get_filepath_or_buffer(
+        431         filepath_or_buffer, encoding, compression
+        432     )
+    
+
+    ~\anaconda3\lib\site-packages\pandas\io\common.py in get_filepath_or_buffer(filepath_or_buffer, encoding, compression, mode)
+        170 
+        171     if isinstance(filepath_or_buffer, str) and is_url(filepath_or_buffer):
+    --> 172         req = urlopen(filepath_or_buffer)
+        173         content_encoding = req.headers.get("Content-Encoding", None)
+        174         if content_encoding == "gzip":
+    
+
+    ~\anaconda3\lib\site-packages\pandas\io\common.py in urlopen(*args, **kwargs)
+        139     import urllib.request
+        140 
+    --> 141     return urllib.request.urlopen(*args, **kwargs)
+        142 
+        143 
+    
+
+    ~\anaconda3\lib\urllib\request.py in urlopen(url, data, timeout, cafile, capath, cadefault, context)
+        220     else:
+        221         opener = _opener
+    --> 222     return opener.open(url, data, timeout)
+        223 
+        224 def install_opener(opener):
+    
+
+    ~\anaconda3\lib\urllib\request.py in open(self, fullurl, data, timeout)
+        529         for processor in self.process_response.get(protocol, []):
+        530             meth = getattr(processor, meth_name)
+    --> 531             response = meth(req, response)
+        532 
+        533         return response
+    
+
+    ~\anaconda3\lib\urllib\request.py in http_response(self, request, response)
+        638         # request was successfully received, understood, and accepted.
+        639         if not (200 <= code < 300):
+    --> 640             response = self.parent.error(
+        641                 'http', request, response, code, msg, hdrs)
+        642 
+    
+
+    ~\anaconda3\lib\urllib\request.py in error(self, proto, *args)
+        567         if http_err:
+        568             args = (dict, 'default', 'http_error_default') + orig_args
+    --> 569             return self._call_chain(*args)
+        570 
+        571 # XXX probably also want an abstract factory that knows when it makes
+    
+
+    ~\anaconda3\lib\urllib\request.py in _call_chain(self, chain, kind, meth_name, *args)
+        500         for handler in handlers:
+        501             func = getattr(handler, meth_name)
+    --> 502             result = func(*args)
+        503             if result is not None:
+        504                 return result
+    
+
+    ~\anaconda3\lib\urllib\request.py in http_error_default(self, req, fp, code, msg, hdrs)
+        647 class HTTPDefaultErrorHandler(BaseHandler):
+        648     def http_error_default(self, req, fp, code, msg, hdrs):
+    --> 649         raise HTTPError(req.full_url, code, msg, hdrs, fp)
+        650 
+        651 class HTTPRedirectHandler(BaseHandler):
+    
+
+    HTTPError: HTTP Error 404: Not Found
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>id</th>
-      <th>text</th>
-      <th>isRetweet</th>
-      <th>isDeleted</th>
-      <th>device</th>
-      <th>favorites</th>
-      <th>retweets</th>
-      <th>date</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>98454970654916608</td>
-      <td>Republicans and Democrats have both created ou...</td>
-      <td>f</td>
-      <td>f</td>
-      <td>TweetDeck</td>
-      <td>49</td>
-      <td>255</td>
-      <td>2011-08-02 18:07:48</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1234653427789070336</td>
-      <td>I was thrilled to be back in the Great city of...</td>
-      <td>f</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>73748</td>
-      <td>17404</td>
-      <td>2020-03-03 01:34:50</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1218010753434820614</td>
-      <td>RT @CBS_Herridge: READ: Letter to surveillance...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>7396</td>
-      <td>2020-01-17 03:22:47</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1304875170860015617</td>
-      <td>The Unsolicited Mail In Ballot Scam is a major...</td>
-      <td>f</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>80527</td>
-      <td>23502</td>
-      <td>2020-09-12 20:10:58</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1218159531554897920</td>
-      <td>RT @MZHemingway: Very friendly telling of even...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>9081</td>
-      <td>2020-01-17 13:13:59</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```
+```python
 len(trump_tweets)
 ```
 
@@ -171,7 +174,7 @@ len(trump_tweets)
 
 
 
-```
+```python
 # Creating a deep copy of the dataset in case of contamination or mistakes
 trump = trump_tweets.copy(deep=True)
 trump.head()
@@ -275,8 +278,8 @@ trump.head()
 ### Time Series Graphing
 
 
-```
-def date_plotter(df, x, y, figsize = (24,12), fmt = 'r-', increments = 'month'):
+```python
+def date_plotter(df, x, y, figsize = (12,6), fmt = 'r-', increments = 'month'):
   # This function will help us to create appealing and effective graphs for our time-series data
   # Input a dataframe and specify x and y columns (x column should contain dates) 
   
@@ -346,7 +349,7 @@ def date_plotter(df, x, y, figsize = (24,12), fmt = 'r-', increments = 'month'):
 First, we will convert the date information into datetime format to make analysis easier
 
 
-```
+```python
 # Creating a function to change strings to datetime format
 fmt = '%Y-%m-%d %H:%M:%S'
 def create_dt(date):
@@ -357,7 +360,21 @@ trump['datetime'] = trump.date.apply(lambda x: create_dt(x))
 ```
 
 
-```
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-4-37668d3a2ddf> in <module>
+          5 
+          6 # Creating a new column in the dataframe with datetime objects
+    ----> 7 trump['datetime'] = trump.date.apply(lambda x: create_dt(x))
+    
+
+    NameError: name 'trump' is not defined
+
+
+
+```python
 date_ex = trump.datetime[0]
 print(date_ex)
 ```
@@ -366,7 +383,7 @@ print(date_ex)
     
 
 
-```
+```python
 #Since all of the dates are in UTC time, we need to convert them to EST. The pytz module will help us do this
 def to_est(date):
   date_utc = date.replace(tzinfo=timezone('UTC'))
@@ -375,7 +392,7 @@ def to_est(date):
 ```
 
 
-```
+```python
 # Now we can apply the function we created to create a new column with the local/eastern time
 trump['date_est'] = trump.datetime.apply(lambda x: to_est(x))
 trump.head()
@@ -487,7 +504,7 @@ trump.head()
 
 
 
-```
+```python
 # Dropping the UTC columns and renaming the date_est column as 'date'
 trump = trump.drop(['date', 'datetime'], axis = 1)
 trump = trump.rename(columns = {'date_est':'date'})
@@ -588,7 +605,7 @@ trump.head()
 
 
 
-```
+```python
 # Creating additional columns with date information
 trump['date_dmy'] = trump['date'].apply(lambda x: x.strftime("%Y-%m-%d")) 
 trump['date_my'] = trump['date'].apply(lambda x: x.strftime("%Y-%m")) 
@@ -739,7 +756,7 @@ trump.head()
 Next, we will go through each of the non-tweet variables in the dataset and explore them.
 
 
-```
+```python
 # Seaborn setup
 sns.set_theme(style='white')
 ```
@@ -749,7 +766,7 @@ To start, let's look at the distribution of Trump's tweets over time.
 ## Tweets per Month
 
 
-```
+```python
 tweets_my = trump.date_my.groupby(trump.date_my).count()
 fig, ax = plt.subplots()
 tweets_my.plot(kind = 'line', figsize = (24,10))
@@ -766,7 +783,7 @@ plt.show()
 ## Tweets per Day
 
 
-```
+```python
 tweets_day = trump.date_dmy.groupby(trump.date_dmy).count()
 fig, ax = plt.subplots(figsize = (24,10))
 tweets_day.plot(kind = 'line', linewidth = 1)
@@ -783,7 +800,7 @@ plt.show()
 **I know what you're thinking at this point: that must be an error! 200 tweets in one day? Let's take a look at this day in particular and see what we find.** 
 
 
-```
+```python
 trump.date_dmy.value_counts()
 ```
 
@@ -810,7 +827,7 @@ Turns out, on June 5th, 2005, Donald Trump did indeed tweet 200 times! Check out
 ## Tweets by Day of the Week
 
 
-```
+```python
 tweets_by_day = trump.day_of_week.groupby(trump.day_of_week).count()
 tweets_by_day = tweets_by_day.reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
 fig, ax = plt.subplots(figsize = (12, 8))
@@ -829,7 +846,7 @@ plt.show()
 How often does Donald delete his tweets? 
 
 
-```
+```python
 trump.head()
 ```
 
@@ -969,7 +986,7 @@ trump.head()
 
 
 
-```
+```python
 deleted_tweets = trump.isDeleted.groupby(trump.isDeleted).count()
 fig, ax = plt.subplots()
 deleted_tweets.plot(kind = 'bar', figsize = (12,8))
@@ -987,25 +1004,25 @@ plt.show()
 ## Deleted Tweets over Time
 
 
-```
+```python
 deleted_my = trump[trump.isDeleted == 't'].groupby(trump.date_my).id.count().reset_index()
 deleted_my = deleted_my.rename(columns={'id':'num_deleted'})
 ```
 
 
-```
+```python
 not_deleted_my = trump[trump.isDeleted == 'f'].groupby(trump.date_my).id.count().reset_index()
 not_deleted_my = not_deleted_my.rename(columns={'id':'num_not_deleted'})
 ```
 
 
-```
+```python
 deleted_or_not = pd.merge(deleted_my, not_deleted_my)
 deleted_or_not.date_my = deleted_or_not.date_my.apply(lambda x: dt.strptime(x, '%Y-%m'))
 ```
 
 
-```
+```python
 fig, ax = plt.subplots(figsize = (24,10))
 plt.plot(deleted_or_not.date_my, deleted_or_not.num_deleted, c='red')
 plt.plot(deleted_or_not.date_my, deleted_or_not.num_not_deleted, c='blue')
@@ -1023,7 +1040,7 @@ plt.show()
 ## Retweets
 
 
-```
+```python
 retweets = trump.isRetweet.groupby(trump.isRetweet).count()
 fig, ax = plt.subplots(figsize = (12,8))
 retweets.plot(kind = 'bar')
@@ -1049,7 +1066,7 @@ It appears that the majority of Trump's tweets are retweets. This is something w
 Before we begin our analysis, I will separate the tweets into two datasets: original tweets and retweets. 
 
 
-```
+```python
 # Split tweets into original tweets and retweets
 original_tweets = trump[trump.isRetweet == 'f']
 trump_retweets = trump[trump.isRetweet == 't']
@@ -1196,7 +1213,7 @@ original_tweets.head()
 
 
 
-```
+```python
 # Creating variables containing only the tweets
 dt_text = original_tweets.text
 rt_text = trump_retweets.text
@@ -1209,7 +1226,7 @@ rt_text = trump_retweets.text
 First, we will clean the text by removing punctuation and other noisy characters. We will also tokenize the strings into individual words
 
 
-```
+```python
 # Creating a function that we can apply to each row of text
 def text_cleaner(text):
   # Use regular expressions to remove punctutation, nonstandard characters, and web links
@@ -1222,13 +1239,13 @@ def text_cleaner(text):
 ```
 
 
-```
+```python
 dt_tokens = dt_text.apply(text_cleaner)
 rt_tokens = rt_text.apply(text_cleaner)
 ```
 
 
-```
+```python
 dt_tokens
 ```
 
@@ -1251,7 +1268,7 @@ dt_tokens
 
 
 
-```
+```python
 # The first token of every tweet is 'rt'. Let's remove this
 rt_tokens 
 ```
@@ -1275,7 +1292,7 @@ rt_tokens
 
 
 
-```
+```python
 # Removing the 'rt' tokens
 def rt_cleaner(lst):
   lst = lst[1:]
@@ -1309,7 +1326,7 @@ Next, we will lemmatize the words, effectively bringing them down to their root 
 At this step, we will further clean and normalize the text data by removing stopwords, which are words that do not provide meaningful information about the statements (in this case, our tweets).
 
 
-```
+```python
 # Creating a function to pull the PoS for a particular word
 def get_pos(word):
   # synsets will return synonyms for the input word, and each synonym will include a part of speech
@@ -1332,7 +1349,7 @@ def get_pos(word):
 Now that we have created a function that will determine the most likely part of speech for any given word, we can use the output of this function to tag words during lemmatization.
 
 
-```
+```python
 def text_cleaner_2(words):
   stop_words = stopwords.words('english')
   # Lemmatization with PoS tagging
@@ -1344,13 +1361,13 @@ def text_cleaner_2(words):
 ```
 
 
-```
+```python
 dt_tokens_norm = dt_tokens.apply(text_cleaner_2)
 rt_tokens_norm = rt_tokens.apply(text_cleaner_2)
 ```
 
 
-```
+```python
 dt_tokens_norm.head()
 ```
 
@@ -1367,7 +1384,7 @@ dt_tokens_norm.head()
 
 
 
-```
+```python
 rt_tokens_norm.head()
 ```
 
@@ -1386,7 +1403,7 @@ rt_tokens_norm.head()
 We have now finished cleaning our text. Let us now compare a tweet before and after our cleaning.
 
 
-```
+```python
 dt_text[1]
 ```
 
@@ -1398,7 +1415,7 @@ dt_text[1]
 
 
 
-```
+```python
 dt_tokens_norm[1]
 ```
 
@@ -1439,7 +1456,7 @@ As you can see, the text looks very different from its initial state but still m
 Before we move on to sentiment analysis, let's take a quick look at the most common N-grams in each of our datasets. N-grams are sequences of N-terms found in the text data, and in this case we will be focusing on bigrams (2-grams) and trigrams (3-grams), as these are able to convey some information about the dataset without being too specific.
 
 
-```
+```python
 # Unpacking the list of words
 dt_words = [item for sublist in dt_tokens_norm.to_list() for item in sublist]
 rt_words = [item for sublist in rt_tokens_norm.to_list() for item in sublist]
@@ -2454,7 +2471,7 @@ dt_words
 
 
 
-```
+```python
 # Creating the bigrams and trigrams
 dt_trigrams = (pd.Series(nltk.ngrams(dt_words, 3)).value_counts())[:10]
 dt_bigrams = (pd.Series(nltk.ngrams(dt_words, 2)).value_counts())[:10]
@@ -2464,14 +2481,14 @@ rt_bigrams = (pd.Series(nltk.ngrams(rt_words, 2)).value_counts())[:10]
 ```
 
 
-```
+```python
 # Concatenating bigrams and trigrams to plot on a single graph
 dt_ngrams = pd.concat([dt_bigrams, dt_trigrams])
 rt_ngrams = pd.concat([rt_bigrams, rt_trigrams])
 ```
 
 
-```
+```python
 fig, ax = plt.subplots(1, 2, figsize = (10,23), gridspec_kw={'width_ratios':[1,1], 'wspace':0.1, 'hspace':0.1})
 bar_ax = ax[0]
 dt_ngrams[::-1].plot.barh(ax = bar_ax, color = 'lightcoral')
@@ -2502,7 +2519,7 @@ plt.show()
 # VADER Sentiment Analysis
 
 
-```
+```python
 # Initialize the VADER sentiment analyzer object
 vader_analyzer = SentimentIntensityAnalyzer()
 
@@ -2514,7 +2531,7 @@ def sentiment_scores(text):
 ```
 
 
-```
+```python
 # VADER sentiment scores for Trump tweets
 original_tweets['polarity_scores'] = original_tweets.text.apply(sentiment_scores) 
 original_tweets['vader_compound'] = original_tweets.polarity_scores.apply(lambda x: x['compound'])
@@ -2690,7 +2707,7 @@ original_tweets.head()
 
 
 
-```
+```python
 # VADER Sentiment Scores for Retweets
 trump_retweets['polarity_scores'] = trump_retweets.text.apply(sentiment_scores) 
 trump_retweets['vader_compound'] = trump_retweets.polarity_scores.apply(lambda x: x['compound'])
@@ -2845,7 +2862,7 @@ trump_retweets.head()
 
 
 
-```
+```python
 # Grouping compound sentiment scores by day to get average compound score/day
 dt_sentiment_dmy = original_tweets.vader_compound.groupby(original_tweets.date_dmy).mean().reset_index()
 dt_sentiment_dmy['date_dmy'] = dt_sentiment_dmy.date_dmy.apply(lambda x: dt.strptime(x, '%Y-%m-%d'))
@@ -2940,7 +2957,7 @@ dt_sentiment_dmy['date_dmy'] = dt_sentiment_dmy.date_dmy.apply(lambda x: dt.strp
 
 
 
-```
+```python
 # Repeating the grouping, but this time by month
 dt_sentiment_my = original_tweets.vader_compound.groupby(original_tweets.date_my).mean().reset_index()
 dt_sentiment_my['date_my'] = dt_sentiment_my.date_my.apply(lambda x: dt.strptime(x, '%Y-%m'))
@@ -3049,7 +3066,7 @@ dt_sentiment_my
 
 
 
-```
+```python
 fig, ax = plt.subplots(figsize = (24,10))
 
 sent_ax = ax
@@ -3078,7 +3095,7 @@ plt.show()
 Now that we have analyzed the sentiment of the entire Trump Twitter archive, let's take a more focused look on the past few years, in which Donald Trump has become a political figure. To do so, we will now consider tweets since 2015, as Trump formally announced his first presidential campaign in June of 2015.
 
 
-```
+```python
 # First, we need to convert the year column to integer type
 original_tweets['year'] = pd.to_numeric(original_tweets.year)
 # We can now select a subset of the data for the years of interest
@@ -3100,7 +3117,7 @@ presidency_tweets.year.value_counts()
 
 
 
-```
+```python
 presidency_tweets_sent = presidency_tweets.vader_compound.groupby(presidency_tweets.date_dmy).mean().reset_index()
 presidency_tweets_sent
 ```
@@ -3196,7 +3213,7 @@ presidency_tweets_sent
 This time around, we will take a different approach to formatting our graph. Let's use the `plot_date` function from `matplotlib`, which requires that we first convert our dates to the matplotlib.date format.
 
 
-```
+```python
 # Converting the dates to matplotlib date format 
 # First, convert dates to datetime
 presidency_tweets_sent.date_dmy = presidency_tweets_sent.date_dmy.apply(pd.to_datetime)
@@ -3210,7 +3227,7 @@ compound_presidency_tweets_sent = np.array(compound_presidency_tweets_sent)
 ```
 
 
-```
+```python
 def date_plotter(df, x, y, title = None, xlabel = None, ylabel = None, labels = None, figsize = (24,12), fmt = 'r-', increments = 'month'):
   # This function will help us to create appealing and effective graphs for our time-series data
   # Input a dataframe and specify x and y columns (x column should contain dates) 
@@ -3282,7 +3299,7 @@ def date_plotter(df, x, y, title = None, xlabel = None, ylabel = None, labels = 
 ```
 
 
-```
+```python
 date_plotter(presidency_tweets_sent, 'date_dmy', 'vader_compound', increments='year', 
              title = 'Trump Tweet Sentiment (2015-Present)', xlabel='Date', ylabel='VADER Compound Sentiment Score', labels = 'VADER Compound Score')
 ```
@@ -3292,294 +3309,25 @@ date_plotter(presidency_tweets_sent, 'date_dmy', 'vader_compound', increments='y
 
 
 
-```
-! ipython nbconvert notebook.ipynb
-```
-
-    [TerminalIPythonApp] WARNING | Subcommand `ipython nbconvert` is deprecated and will be removed in future versions.
-    [TerminalIPythonApp] WARNING | You likely want to use `jupyter nbconvert` in the future
-    [NbConvertApp] WARNING | pattern u'notebook.ipynb' matched no files
-    This application is used to convert notebook files (*.ipynb) to various other
-    formats.
-    
-    WARNING: THE COMMANDLINE INTERFACE MAY CHANGE IN FUTURE RELEASES.
-    
-    Options
-    -------
-    
-    Arguments that take values are actually convenience aliases to full
-    Configurables, whose aliases are listed on the help line. For more information
-    on full configurables, see '--help-all'.
-    
-    --execute
-        Execute the notebook prior to export.
-    --allow-errors
-        Continue notebook execution even if one of the cells throws an error and include the error message in the cell output (the default behaviour is to abort conversion). This flag is only relevant if '--execute' was specified, too.
-    --no-input
-        Exclude input cells and output prompts from converted document. 
-        This mode is ideal for generating code-free reports.
-    --stdout
-        Write notebook output to stdout instead of files.
-    --stdin
-        read a single notebook file from stdin. Write the resulting notebook with default basename 'notebook.*'
-    --inplace
-        Run nbconvert in place, overwriting the existing notebook (only 
-        relevant when converting to notebook format)
-    -y
-        Answer yes to any questions instead of prompting.
-    --clear-output
-        Clear output of current file and save in place, 
-        overwriting the existing notebook.
-    --debug
-        set log level to logging.DEBUG (maximize logging output)
-    --no-prompt
-        Exclude input and output prompts from converted document.
-    --generate-config
-        generate default config file
-    --nbformat=<Enum> (NotebookExporter.nbformat_version)
-        Default: 4
-        Choices: [1, 2, 3, 4]
-        The nbformat version to write. Use this to downgrade notebooks.
-    --output-dir=<Unicode> (FilesWriter.build_directory)
-        Default: ''
-        Directory to write output(s) to. Defaults to output to the directory of each
-        notebook. To recover previous default behaviour (outputting to the current
-        working directory) use . as the flag value.
-    --writer=<DottedObjectName> (NbConvertApp.writer_class)
-        Default: 'FilesWriter'
-        Writer class used to write the  results of the conversion
-    --log-level=<Enum> (Application.log_level)
-        Default: 30
-        Choices: (0, 10, 20, 30, 40, 50, 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL')
-        Set the log level by value or name.
-    --reveal-prefix=<Unicode> (SlidesExporter.reveal_url_prefix)
-        Default: u''
-        The URL prefix for reveal.js (version 3.x). This defaults to the reveal CDN,
-        but can be any url pointing to a copy  of reveal.js.
-        For speaker notes to work, this must be a relative path to a local  copy of
-        reveal.js: e.g., "reveal.js".
-        If a relative path is given, it must be a subdirectory of the current
-        directory (from which the server is run).
-        See the usage documentation
-        (https://nbconvert.readthedocs.io/en/latest/usage.html#reveal-js-html-
-        slideshow) for more details.
-    --to=<Unicode> (NbConvertApp.export_format)
-        Default: 'html'
-        The export format to be used, either one of the built-in formats
-        ['asciidoc', 'custom', 'html', 'latex', 'markdown', 'notebook', 'pdf',
-        'python', 'rst', 'script', 'slides'] or a dotted object name that represents
-        the import path for an `Exporter` class
-    --template=<Unicode> (TemplateExporter.template_file)
-        Default: u''
-        Name of the template file to use
-    --output=<Unicode> (NbConvertApp.output_base)
-        Default: ''
-        overwrite base name use for output files. can only be used when converting
-        one notebook at a time.
-    --post=<DottedOrNone> (NbConvertApp.postprocessor_class)
-        Default: u''
-        PostProcessor class used to write the results of the conversion
-    --config=<Unicode> (JupyterApp.config_file)
-        Default: u''
-        Full path of a config file.
-    
-    To see all available configurables, use `--help-all`
-    
-    Examples
-    --------
-    
-        The simplest way to use nbconvert is
-        
-        > jupyter nbconvert mynotebook.ipynb
-        
-        which will convert mynotebook.ipynb to the default format (probably HTML).
-        
-        You can specify the export format with `--to`.
-        Options include ['asciidoc', 'custom', 'html', 'latex', 'markdown', 'notebook', 'pdf', 'python', 'rst', 'script', 'slides'].
-        
-        > jupyter nbconvert --to latex mynotebook.ipynb
-        
-        Both HTML and LaTeX support multiple output templates. LaTeX includes
-        'base', 'article' and 'report'.  HTML includes 'basic' and 'full'. You
-        can specify the flavor of the format used.
-        
-        > jupyter nbconvert --to html --template basic mynotebook.ipynb
-        
-        You can also pipe the output to stdout, rather than a file
-        
-        > jupyter nbconvert mynotebook.ipynb --stdout
-        
-        PDF is generated via latex
-        
-        > jupyter nbconvert mynotebook.ipynb --to pdf
-        
-        You can get (and serve) a Reveal.js-powered slideshow
-        
-        > jupyter nbconvert myslides.ipynb --to slides --post serve
-        
-        Multiple notebooks can be given at the command line in a couple of 
-        different ways:
-        
-        > jupyter nbconvert notebook*.ipynb
-        > jupyter nbconvert notebook1.ipynb notebook2.ipynb
-        
-        or you can specify the notebooks list in a config file, containing::
-        
-            c.NbConvertApp.notebooks = ["my_notebook.ipynb"]
-        
-        > jupyter nbconvert --config mycfg.py
-    
-    
-
-
-```
-! ipython nbconvert --to notebook --execute mynotebook.ipynb
+```python
+! jupyter nbconvert --to markdown trump_twitter_analysis.ipynb
 ```
 
-    [TerminalIPythonApp] WARNING | Subcommand `ipython nbconvert` is deprecated and will be removed in future versions.
-    [TerminalIPythonApp] WARNING | You likely want to use `jupyter nbconvert` in the future
-    [NbConvertApp] WARNING | pattern u'mynotebook.ipynb' matched no files
-    This application is used to convert notebook files (*.ipynb) to various other
-    formats.
-    
-    WARNING: THE COMMANDLINE INTERFACE MAY CHANGE IN FUTURE RELEASES.
-    
-    Options
-    -------
-    
-    Arguments that take values are actually convenience aliases to full
-    Configurables, whose aliases are listed on the help line. For more information
-    on full configurables, see '--help-all'.
-    
-    --execute
-        Execute the notebook prior to export.
-    --allow-errors
-        Continue notebook execution even if one of the cells throws an error and include the error message in the cell output (the default behaviour is to abort conversion). This flag is only relevant if '--execute' was specified, too.
-    --no-input
-        Exclude input cells and output prompts from converted document. 
-        This mode is ideal for generating code-free reports.
-    --stdout
-        Write notebook output to stdout instead of files.
-    --stdin
-        read a single notebook file from stdin. Write the resulting notebook with default basename 'notebook.*'
-    --inplace
-        Run nbconvert in place, overwriting the existing notebook (only 
-        relevant when converting to notebook format)
-    -y
-        Answer yes to any questions instead of prompting.
-    --clear-output
-        Clear output of current file and save in place, 
-        overwriting the existing notebook.
-    --debug
-        set log level to logging.DEBUG (maximize logging output)
-    --no-prompt
-        Exclude input and output prompts from converted document.
-    --generate-config
-        generate default config file
-    --nbformat=<Enum> (NotebookExporter.nbformat_version)
-        Default: 4
-        Choices: [1, 2, 3, 4]
-        The nbformat version to write. Use this to downgrade notebooks.
-    --output-dir=<Unicode> (FilesWriter.build_directory)
-        Default: ''
-        Directory to write output(s) to. Defaults to output to the directory of each
-        notebook. To recover previous default behaviour (outputting to the current
-        working directory) use . as the flag value.
-    --writer=<DottedObjectName> (NbConvertApp.writer_class)
-        Default: 'FilesWriter'
-        Writer class used to write the  results of the conversion
-    --log-level=<Enum> (Application.log_level)
-        Default: 30
-        Choices: (0, 10, 20, 30, 40, 50, 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL')
-        Set the log level by value or name.
-    --reveal-prefix=<Unicode> (SlidesExporter.reveal_url_prefix)
-        Default: u''
-        The URL prefix for reveal.js (version 3.x). This defaults to the reveal CDN,
-        but can be any url pointing to a copy  of reveal.js.
-        For speaker notes to work, this must be a relative path to a local  copy of
-        reveal.js: e.g., "reveal.js".
-        If a relative path is given, it must be a subdirectory of the current
-        directory (from which the server is run).
-        See the usage documentation
-        (https://nbconvert.readthedocs.io/en/latest/usage.html#reveal-js-html-
-        slideshow) for more details.
-    --to=<Unicode> (NbConvertApp.export_format)
-        Default: 'html'
-        The export format to be used, either one of the built-in formats
-        ['asciidoc', 'custom', 'html', 'latex', 'markdown', 'notebook', 'pdf',
-        'python', 'rst', 'script', 'slides'] or a dotted object name that represents
-        the import path for an `Exporter` class
-    --template=<Unicode> (TemplateExporter.template_file)
-        Default: u''
-        Name of the template file to use
-    --output=<Unicode> (NbConvertApp.output_base)
-        Default: ''
-        overwrite base name use for output files. can only be used when converting
-        one notebook at a time.
-    --post=<DottedOrNone> (NbConvertApp.postprocessor_class)
-        Default: u''
-        PostProcessor class used to write the results of the conversion
-    --config=<Unicode> (JupyterApp.config_file)
-        Default: u''
-        Full path of a config file.
-    
-    To see all available configurables, use `--help-all`
-    
-    Examples
-    --------
-    
-        The simplest way to use nbconvert is
-        
-        > jupyter nbconvert mynotebook.ipynb
-        
-        which will convert mynotebook.ipynb to the default format (probably HTML).
-        
-        You can specify the export format with `--to`.
-        Options include ['asciidoc', 'custom', 'html', 'latex', 'markdown', 'notebook', 'pdf', 'python', 'rst', 'script', 'slides'].
-        
-        > jupyter nbconvert --to latex mynotebook.ipynb
-        
-        Both HTML and LaTeX support multiple output templates. LaTeX includes
-        'base', 'article' and 'report'.  HTML includes 'basic' and 'full'. You
-        can specify the flavor of the format used.
-        
-        > jupyter nbconvert --to html --template basic mynotebook.ipynb
-        
-        You can also pipe the output to stdout, rather than a file
-        
-        > jupyter nbconvert mynotebook.ipynb --stdout
-        
-        PDF is generated via latex
-        
-        > jupyter nbconvert mynotebook.ipynb --to pdf
-        
-        You can get (and serve) a Reveal.js-powered slideshow
-        
-        > jupyter nbconvert myslides.ipynb --to slides --post serve
-        
-        Multiple notebooks can be given at the command line in a couple of 
-        different ways:
-        
-        > jupyter nbconvert notebook*.ipynb
-        > jupyter nbconvert notebook1.ipynb notebook2.ipynb
-        
-        or you can specify the notebooks list in a config file, containing::
-        
-            c.NbConvertApp.notebooks = ["my_notebook.ipynb"]
-        
-        > jupyter nbconvert --config mycfg.py
-    
+    [NbConvertApp] Converting notebook trump_twitter_analysis.ipynb to markdown
+    [NbConvertApp] Support files will be in trump_twitter_analysis_files\
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Making directory trump_twitter_analysis_files
+    [NbConvertApp] Writing 81871 bytes to trump_twitter_analysis.md
     
 
 
-```
-! jupyter nbconvert --to <output format> <input notebook>
-```
-
-    < was unexpected at this time.
-    
-
-
-```
+```python
 
 ```
