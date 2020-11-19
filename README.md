@@ -1,5 +1,21 @@
-# Analyzing Trump's Tweets Using Natural Language Processing
-In this project, I will be analyzing over 50,000 of Donald Trump's tweets using Python and Natural Language Processing (NLP) techniques. Thankfully, [The Trump Archive](https://www.thetrumparchive.com) has provided an open-source API dedicated entirely to Donald Trump's tweets, and we will be using this dataset to perform our analysis today. 
+
+
+![png](trump_twitter_nlp_files/trump_twitter_nlp_101_0.png)
+
+
+There is no doubt that Donald Trump has been a very controversial and polarizing figure in the United States, especially since he announced his run for the presidency in 2015. 
+
+Throughout his presidency, Donald Trump has used Twitter as a powerful tool to reach his supporters. The social media service has, without a doubt, been one of his most powerful tools. 
+
+This project was primarily inspired by Donald Trump's relentless use of Twitter, as it has raised some important questions, including but not limited to:
+
+*   What is the overall sentiment of Trump's tweets, and how has it changed over time? 
+*   What are some defining features of Trump's behavior on Twitter, and how can we visualize them?
+
+In this project, I will walk you through my analysis of over 50,000 of Donald Trump's tweets using Python and Natural Language Processing (NLP) techniques. Thankfully, [The Trump Archive](https://www.thetrumparchive.com) has provided an open-source API dedicated entirely to Donald Trump's tweets, and we will be using this dataset to perform our analysis today. 
+
+As we approach this problem, one cannot help but wonder: to what extent can a NLP algorithm tell us about the meaning and feeling behind a single individual's thoughts, especially when they were, until just recently, limited to 140 characters?
+
 
 # Setup
 
@@ -45,120 +61,116 @@ import warnings
 warnings.filterwarnings('ignore')
 ```
 
-    [nltk_data] Downloading package stopwords to
-    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
+    [nltk_data] Downloading package stopwords to /root/nltk_data...
     [nltk_data]   Package stopwords is already up-to-date!
-    [nltk_data] Downloading package punkt to
-    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
+    [nltk_data] Downloading package punkt to /root/nltk_data...
     [nltk_data]   Package punkt is already up-to-date!
-    [nltk_data] Downloading package wordnet to
-    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
+    [nltk_data] Downloading package wordnet to /root/nltk_data...
     [nltk_data]   Package wordnet is already up-to-date!
-    [nltk_data] Downloading package vader_lexicon to
-    [nltk_data]     C:\Users\Thet\AppData\Roaming\nltk_data...
+    [nltk_data] Downloading package vader_lexicon to /root/nltk_data...
+    [nltk_data]   Package vader_lexicon is already up-to-date!
     
 
 ## Loading the Data
 
 
 ```python
-url = "https://raw.githubusercontent.com/naingthet/twitter-nlp/main/trump_tweets.csv?token=ARUU4WFK6DI5K7PZBZ5F52K7WRGN6"
+url = "https://raw.githubusercontent.com/naingthet/trump-tweets-nlp/gh-pages/trump_tweets.csv"
 trump_tweets = pd.read_csv(url, parse_dates=True)
 trump_tweets.head()
 ```
 
 
-    ---------------------------------------------------------------------------
 
-    HTTPError                                 Traceback (most recent call last)
 
-    <ipython-input-2-7a51e6d08fac> in <module>
-          1 url = "https://raw.githubusercontent.com/naingthet/twitter-nlp/main/trump_tweets.csv?token=ARUU4WFK6DI5K7PZBZ5F52K7WRGN6"
-    ----> 2 trump_tweets = pd.read_csv(url, parse_dates=True)
-          3 trump_tweets.head()
-    
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-    ~\anaconda3\lib\site-packages\pandas\io\parsers.py in parser_f(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, squeeze, prefix, mangle_dupe_cols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, dialect, error_bad_lines, warn_bad_lines, delim_whitespace, low_memory, memory_map, float_precision)
-        674         )
-        675 
-    --> 676         return _read(filepath_or_buffer, kwds)
-        677 
-        678     parser_f.__name__ = name
-    
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-    ~\anaconda3\lib\site-packages\pandas\io\parsers.py in _read(filepath_or_buffer, kwds)
-        428     # though mypy handling of conditional imports is difficult.
-        429     # See https://github.com/python/mypy/issues/1297
-    --> 430     fp_or_buf, _, compression, should_close = get_filepath_or_buffer(
-        431         filepath_or_buffer, encoding, compression
-        432     )
-    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>text</th>
+      <th>isRetweet</th>
+      <th>isDeleted</th>
+      <th>device</th>
+      <th>favorites</th>
+      <th>retweets</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>98454970654916608</td>
+      <td>Republicans and Democrats have both created ou...</td>
+      <td>f</td>
+      <td>f</td>
+      <td>TweetDeck</td>
+      <td>49</td>
+      <td>255</td>
+      <td>2011-08-02 18:07:48</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1234653427789070336</td>
+      <td>I was thrilled to be back in the Great city of...</td>
+      <td>f</td>
+      <td>f</td>
+      <td>Twitter for iPhone</td>
+      <td>73748</td>
+      <td>17404</td>
+      <td>2020-03-03 01:34:50</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1218010753434820614</td>
+      <td>RT @CBS_Herridge: READ: Letter to surveillance...</td>
+      <td>t</td>
+      <td>f</td>
+      <td>Twitter for iPhone</td>
+      <td>0</td>
+      <td>7396</td>
+      <td>2020-01-17 03:22:47</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1304875170860015617</td>
+      <td>The Unsolicited Mail In Ballot Scam is a major...</td>
+      <td>f</td>
+      <td>f</td>
+      <td>Twitter for iPhone</td>
+      <td>80527</td>
+      <td>23502</td>
+      <td>2020-09-12 20:10:58</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1218159531554897920</td>
+      <td>RT @MZHemingway: Very friendly telling of even...</td>
+      <td>t</td>
+      <td>f</td>
+      <td>Twitter for iPhone</td>
+      <td>0</td>
+      <td>9081</td>
+      <td>2020-01-17 13:13:59</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-    ~\anaconda3\lib\site-packages\pandas\io\common.py in get_filepath_or_buffer(filepath_or_buffer, encoding, compression, mode)
-        170 
-        171     if isinstance(filepath_or_buffer, str) and is_url(filepath_or_buffer):
-    --> 172         req = urlopen(filepath_or_buffer)
-        173         content_encoding = req.headers.get("Content-Encoding", None)
-        174         if content_encoding == "gzip":
-    
-
-    ~\anaconda3\lib\site-packages\pandas\io\common.py in urlopen(*args, **kwargs)
-        139     import urllib.request
-        140 
-    --> 141     return urllib.request.urlopen(*args, **kwargs)
-        142 
-        143 
-    
-
-    ~\anaconda3\lib\urllib\request.py in urlopen(url, data, timeout, cafile, capath, cadefault, context)
-        220     else:
-        221         opener = _opener
-    --> 222     return opener.open(url, data, timeout)
-        223 
-        224 def install_opener(opener):
-    
-
-    ~\anaconda3\lib\urllib\request.py in open(self, fullurl, data, timeout)
-        529         for processor in self.process_response.get(protocol, []):
-        530             meth = getattr(processor, meth_name)
-    --> 531             response = meth(req, response)
-        532 
-        533         return response
-    
-
-    ~\anaconda3\lib\urllib\request.py in http_response(self, request, response)
-        638         # request was successfully received, understood, and accepted.
-        639         if not (200 <= code < 300):
-    --> 640             response = self.parent.error(
-        641                 'http', request, response, code, msg, hdrs)
-        642 
-    
-
-    ~\anaconda3\lib\urllib\request.py in error(self, proto, *args)
-        567         if http_err:
-        568             args = (dict, 'default', 'http_error_default') + orig_args
-    --> 569             return self._call_chain(*args)
-        570 
-        571 # XXX probably also want an abstract factory that knows when it makes
-    
-
-    ~\anaconda3\lib\urllib\request.py in _call_chain(self, chain, kind, meth_name, *args)
-        500         for handler in handlers:
-        501             func = getattr(handler, meth_name)
-    --> 502             result = func(*args)
-        503             if result is not None:
-        504                 return result
-    
-
-    ~\anaconda3\lib\urllib\request.py in http_error_default(self, req, fp, code, msg, hdrs)
-        647 class HTTPDefaultErrorHandler(BaseHandler):
-        648     def http_error_default(self, req, fp, code, msg, hdrs):
-    --> 649         raise HTTPError(req.full_url, code, msg, hdrs, fp)
-        650 
-        651 class HTTPRedirectHandler(BaseHandler):
-    
-
-    HTTPError: HTTP Error 404: Not Found
 
 
 
@@ -273,13 +285,16 @@ trump.head()
 
 
 
-## Useful functions
+# Custom Functions
 
-### Time Series Graphing
+## Graphing Functions
+
+### date_plotter
+This function will allow us to easily create effective graphs for our time series data. 
 
 
 ```python
-def date_plotter(df, x, y, figsize = (12,6), fmt = 'r-', increments = 'month'):
+def date_plotter(df, x, y, xlabel = None, ylabel = None, title = None, legend = False, labels = None, figsize = None, fmt = 'r-', increments = 'month'):
   # This function will help us to create appealing and effective graphs for our time-series data
   # Input a dataframe and specify x and y columns (x column should contain dates) 
   
@@ -302,7 +317,10 @@ def date_plotter(df, x, y, figsize = (12,6), fmt = 'r-', increments = 'month'):
   # Plotting
 
   # Create figure, axes, and plot
-  fig, ax = plt.subplots(figsize = figsize)
+  if figsize == None:
+    fig, ax = plt.subplots()
+  else:
+    fig, ax = plt.subplots(figsize = figsize)
   ax.plot_date(x = dates, y = y_values, fmt = fmt)
 
   # Formatting dates
@@ -340,7 +358,225 @@ def date_plotter(df, x, y, figsize = (12,6), fmt = 'r-', increments = 'month'):
   # X-axis formatting
   fig.autofmt_xdate()
 
+  # Additional formatting
+  ax.set_title(title)
+  ax.set_xlabel(xlabel)
+  ax.set_ylabel(ylabel)
+  if legend:
+    ax.legend(labels)
+
   plt.show()
+```
+
+### date_plotter_sns
+This function will operate in a manner very similar to `date_plotter`, but will use the `seaborn` library instead of just `matplotlib`. This function will be used to create sentiment analysis graphs, and is designed to mimic the appearance of the following function, `multiplotter`. 
+
+
+```python
+def date_plotter_sns(df, x, y, xlabel = None, ylabel = None, title = None, legend = False, labels = None, figsize = None, fmt = 'r-', increments = 'month'):
+  # This function will help us to create appealing and effective graphs for our time-series data
+  # Input a dataframe and specify x and y columns (x column should contain dates) 
+  
+  # Preparing the data
+
+  # Save the df as a new variable
+  data = df
+  color = '#3495eb'
+
+  # Convert date values to datetime format
+  data[x] = data[x].apply(pd.to_datetime)
+  # Save the date values to a list
+  dates_list = data[x].to_list()
+  # Convert list of dates to numerical format; these will be the x values
+  dates = mpl.dates.date2num(dates_list)
+
+  # Gathering the y values
+  y_list = data[y].to_list()
+  y_values = np.array(y_list)
+
+  # Plotting
+
+  #Create figure, axes, and plot
+  if figsize == None:
+    fig, ax = plt.subplots()
+  else:
+    fig, ax = plt.subplots(figsize = figsize)
+  sns.set_theme(style='white')
+  sns.lineplot(data = data, x = dates, y = y_values, ax = ax,
+               color = color, alpha = 0.5)
+  sns.regplot(data = data, x = dates, y = y_values, ax = ax, 
+              logistic=True, ci=95, color=color, scatter_kws={'s':5})
+
+
+  # Formatting dates
+  years = mpl.dates.YearLocator()   # every year
+  months = mpl.dates.MonthLocator()  # every month
+  years_fmt = mpl.dates.DateFormatter('%Y')
+  months_fmt = mpl.dates.DateFormatter('%Y-%m')
+
+  # Formatting the ticks by months or years
+  # Creating a list of options for increments to ensure proper input
+  increment_options = ['month', 'year']
+  if increments not in increment_options:
+    raise ValueError("Invalid increment type. Expected one of: {}".format(increment_options))
+  
+  if increments == 'month':
+    ax.xaxis.set_major_locator(months)
+    ax.xaxis.set_major_formatter(months_fmt)
+  elif increments == 'year':
+    ax.xaxis.set_major_locator(years)
+    ax.xaxis.set_major_formatter(years_fmt)
+
+  # Setting x-axis limits  
+  datemin = dates[0]
+  datemax = dates[-1]
+  ax.set_xlim(datemin, datemax)
+  ax.set_ylim(-1, 1)
+
+  # Formatting coordinate grid
+  if increments == 'month':
+    ax.format_xdata = mpl.dates.DateFormatter('%Y-%m')
+  elif increments == 'year':
+    ax.format_xdata = mpl.dates.DateFormatter('%Y')
+  
+  ax.grid(False)
+
+  # Creating a black horizontal bar at y = 0, which divides positive and negative sentiments
+  ax.axhline(c= 'black')
+
+  # X-axis formatting
+  fig.autofmt_xdate()
+
+  # Additional formatting
+  ax.set_title(title)
+  ax.set_xlabel(xlabel)
+  ax.set_ylabel(ylabel)
+  if legend:
+    ax.legend(labels)
+  # ax.spines['right'].set_visible(False)
+  # ax.spines['top'].set_visible(False)
+
+  plt.show()
+```
+
+### multiplotter
+This function has a very specific purpose: to create three graphs representing the proportions of positive, neutral, and negative VADER scores.
+
+
+```python
+def multiplotter(df, x, y, xlabel = 'Date',
+                 ylabel = ['Positive Sentiment', 'Neutral Sentiment', 'Negative Sentiment'],
+                 title = None, labels = ['Positive', 'Neutral', 'Negative'],
+                 figsize = None, increments = 'year'):
+  # This function will help us to create appealing and effective graphs for our time-series data
+  # Input a dataframe and specify x and y columns (x column should contain dates) 
+  
+  fig, ax = plt.subplots(3, 1, figsize=(12,8), gridspec_kw={'hspace':0.1}, sharex=True)
+  fig.suptitle('Daily Average of Tweet Sentiment')
+  # fmt = ['g-', 'b-', 'r-']
+  # Alternatives: '#52ff52', '#5252ff', '#ff5050'
+  colors = ['g', 'b', 'r']
+  xlabels = ['Date', 'Date', 'Date']
+  ylabels = ['Positive Sentiment (Proportion)', 'Neutral Sentiment (Proportion)', 'Negative Sentiment (Proportion)']
+  
+  for i in range(3):
+    # Loop variables
+    y_it = y[i]
+    ax_it = ax[i]
+
+    # Preparing the data
+
+    # Save the df as a new variable
+    data = df
+    plt.axhline(c='black')
+    # Convert date values to datetime format
+    data[x] = data[x].apply(pd.to_datetime)
+    # Save the date values to a list
+    dates_list = data[x].to_list()
+    # Convert list of dates to numerical format; these will be the x values
+    dates = mpl.dates.date2num(dates_list)
+
+    # Gathering the y values
+    y_list = data[y_it].to_list()
+    y_values = np.array(y_list)
+
+    # Plotting
+
+    # Create figure, axes, and plot
+    sns.set_theme(style='white')
+    sns.lineplot(data = data, x = dates, y = y_values, ax = ax_it,
+                 color = colors[i], alpha = 0.5)
+    sns.regplot(data = data, x = dates, y = y_values, ax = ax_it, 
+                logistic=True, ci=95, color=colors[i], scatter_kws={'s':5})
+    # ax_it.plot_date(x = dates, y = y_values, fmt = fmt[i])
+
+    # Formatting dates
+    years = mpl.dates.YearLocator()   # every year
+    months = mpl.dates.MonthLocator()  # every month
+    years_fmt = mpl.dates.DateFormatter('%Y')
+    months_fmt = mpl.dates.DateFormatter('%Y-%m')
+
+    # Formatting the ticks by months or years
+    # Creating a list of options for increments to ensure proper input
+    increment_options = ['month', 'year']
+    if increments not in increment_options:
+      raise ValueError("Invalid increment type. Expected one of: {}".format(increment_options))
+  
+    if increments == 'month':
+      ax_it.xaxis.set_major_locator(months)
+      ax_it.xaxis.set_major_formatter(months_fmt)
+    elif increments == 'year':
+      ax_it.xaxis.set_major_locator(years)
+      ax_it.xaxis.set_major_formatter(years_fmt)
+
+    # Setting axis limits  
+    datemin = dates[0]
+    datemax = dates[-1]
+    y_min = 0.0
+    y_max = 1.0
+    # y_min = y_values.min()
+    # y_max = y_values.max()
+    ax_it.set_xlim(datemin, datemax)
+    ax_it.set_ylim(y_min, y_max)
+
+    # Formatting coordinate grid
+    if increments == 'month':
+      ax_it.format_xdata = mpl.dates.DateFormatter('%Y-%m')
+    elif increments == 'year':
+      ax_it.format_xdata = mpl.dates.DateFormatter('%Y')
+
+    # Removing outer spines
+    if i == 2: 
+      ax_it.spines['right'].set_visible(False)
+      ax_it.spines['top'].set_visible(False)
+    else:
+      ax_it.spines['right'].set_visible(False)
+      ax_it.spines['top'].set_visible(False)
+      ax_it.spines['bottom'].set_visible(False)
+
+    # Axis formatting
+    fig.autofmt_xdate()
+
+    # Additional formatting
+    #ax_it.set_title(title)
+    ax_it.set_xlabel(xlabel)
+    ax_it.set_ylabel(ylabel[i])
+    
+
+  plt.show()
+```
+
+## Visualization Setup
+
+
+```python
+# Matplotlib parameters
+mpl.rcParams['figure.figsize'] = [12,6]
+mpl.rcParams['font.size'] = 120
+
+# Seaborn setup
+sns.set_theme(context='poster' , style='whitegrid')
+sns.set(rc={'figure.figsize':(12, 6)})
 ```
 
 # Data Cleaning
@@ -358,20 +594,6 @@ def create_dt(date):
 # Creating a new column in the dataframe with datetime objects
 trump['datetime'] = trump.date.apply(lambda x: create_dt(x))
 ```
-
-
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    <ipython-input-4-37668d3a2ddf> in <module>
-          5 
-          6 # Creating a new column in the dataframe with datetime objects
-    ----> 7 trump['datetime'] = trump.date.apply(lambda x: create_dt(x))
-    
-
-    NameError: name 'trump' is not defined
-
 
 
 ```python
@@ -755,99 +977,74 @@ trump.head()
 # Exploratory Data Analysis/Visualization
 Next, we will go through each of the non-tweet variables in the dataset and explore them.
 
-
-```python
-# Seaborn setup
-sns.set_theme(style='white')
-```
-
 To start, let's look at the distribution of Trump's tweets over time. 
 
 ## Tweets per Month
 
 
 ```python
-tweets_my = trump.date_my.groupby(trump.date_my).count()
-fig, ax = plt.subplots()
-tweets_my.plot(kind = 'line', figsize = (24,10))
-ax.set_title("Donald Trump's Tweets Per Month")
-ax.set_xlabel('Date (Year-Month)')
-ax.set_ylabel('Tweets per Month')
-plt.show()
+# Using aggregate functions to determine tweets per month
+tweets_my = trump.groupby(trump.date_my).date_my.count()
+tweets_my = pd.DataFrame({'date_my':tweets_my.index, 'count':tweets_my.values})
+tweets_my
+
+# Using the custom plotting function
+date_plotter(tweets_my, 'date_my', 'count', xlabel='Year', ylabel='Tweets per Month', title = "Donald Trump's Tweets per Month", increments='year')
 ```
 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_23_0.png)
+![png](trump_twitter_nlp_files/trump_twitter_nlp_29_0.png)
+
+
+**Note:** Although the x-axis labels represent years, both the x and y values represent **monthly** tweets. We have simply labeled the x-axis with years to minimize clutter.
+
+Interestingly, it appears that Trump's Twitter activity was very high between 2013 and 2016, then decreased after the start of his presidency. However, even more interesting is the fact that Trump has steadily increased his activity since the start of 2019, and is now sending more tweets per month than ever before!
+
+It is important to note that the most recent data shows a drop in monthly tweets, but this is due to the fact that this data was collected about halfway through November 2020. We can therefore disregard this drop.
 
 
 ## Tweets per Day
 
 
 ```python
+# Using aggregate functions to determine tweets per day
 tweets_day = trump.date_dmy.groupby(trump.date_dmy).count()
-fig, ax = plt.subplots(figsize = (24,10))
-tweets_day.plot(kind = 'line', linewidth = 1)
-ax.set_title('Donald Trump Tweets per Day')
-ax.set_ylabel('Tweets per Day')
-ax.set_xlabel('Date (Year-Month-Day)')
-plt.show()
+tweets_day = pd.DataFrame({'date_dmy':tweets_day.index, 'count':tweets_day.values})
+tweets_day
+
+# Using the custom plotting function
+date_plotter(tweets_day, 'date_dmy', 'count', xlabel = 'Date', ylabel= 'Tweets per Day', title="Donald Trump's Tweets per Day", increments='year')
 ```
 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_25_0.png)
+![png](trump_twitter_nlp_files/trump_twitter_nlp_33_0.png)
 
+
+Looking at Trump's tweets per day, we see a very similar trend (as we would expect). However, the daily tweet counts provide more granular insight into Trump's behavior on Twitter. We can see that Trump's tweet count can vary significantly from day to day, as there are handful of days on which he sent out more than 100 tweets.
 
 **I know what you're thinking at this point: that must be an error! 200 tweets in one day? Let's take a look at this day in particular and see what we find.** 
 
 
 ```python
-trump.date_dmy.value_counts()
+busiest_day = trump.date_dmy.value_counts().index[0]
+most_tweets_day = trump.date_dmy.value_counts().values[0]
+print("Trump's Busiest Day on Twitter: {} Tweets on {}".format(most_tweets_day, busiest_day))
 ```
 
+    Trump's Busiest Day on Twitter: 200 Tweets on 2020-06-05
+    
 
-
-
-    2020-06-05    200
-    2015-01-04    147
-    2020-01-22    142
-    2015-01-05    133
-    2020-05-10    126
-                 ... 
-    2011-02-23      1
-    2016-12-18      1
-    2010-02-10      1
-    2009-08-11      1
-    2011-06-02      1
-    Name: date_dmy, Length: 3444, dtype: int64
-
-
-
-Turns out, on June 5th, 2005, Donald Trump did indeed tweet 200 times! Check out this article from [Insider](https://www.insider.com/trump-breaks-record-most-tweets-in-a-single-day-2020-6).
+Turns out, on June 5th, 2020, Donald Trump actually tweeted 200 times! Check out this article from [Insider](https://www.insider.com/trump-breaks-record-most-tweets-in-a-single-day-2020-6).
 
 ## Tweets by Day of the Week
 
 
 ```python
+# Using pandas aggregates to count total tweets by day of week
 tweets_by_day = trump.day_of_week.groupby(trump.day_of_week).count()
 tweets_by_day = tweets_by_day.reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-fig, ax = plt.subplots(figsize = (12, 8))
-tweets_by_day.plot(kind = 'bar')
-ax.set_title("Donald Trump's Tweets by Day of the Week")
-ax.set_ylabel('Total Tweets')
-ax.set_xlabel('Day of the Week')
-plt.show()
-```
-
-
-![png](trump_twitter_analysis_files/trump_twitter_analysis_30_0.png)
-
-
-## Deleted Tweets
-How often does Donald delete his tweets? 
-
-
-```python
-trump.head()
+tweets_by_day = pd.DataFrame({'day_of_week': tweets_by_day.index, 'count': tweets_by_day.values})
+tweets_by_day
 ```
 
 
@@ -871,113 +1068,45 @@ trump.head()
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>id</th>
-      <th>text</th>
-      <th>isRetweet</th>
-      <th>isDeleted</th>
-      <th>device</th>
-      <th>favorites</th>
-      <th>retweets</th>
-      <th>date</th>
-      <th>date_dmy</th>
-      <th>date_my</th>
-      <th>time</th>
-      <th>hour</th>
       <th>day_of_week</th>
-      <th>year</th>
-      <th>month</th>
+      <th>count</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>98454970654916608</td>
-      <td>Republicans and Democrats have both created ou...</td>
-      <td>f</td>
-      <td>f</td>
-      <td>TweetDeck</td>
-      <td>49</td>
-      <td>255</td>
-      <td>2011-08-02 14:07:48-04:00</td>
-      <td>2011-08-02</td>
-      <td>2011-08</td>
-      <td>14:07</td>
-      <td>14</td>
-      <td>Tuesday</td>
-      <td>2011</td>
-      <td>08</td>
+      <td>Monday</td>
+      <td>8197</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1234653427789070336</td>
-      <td>I was thrilled to be back in the Great city of...</td>
-      <td>f</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>73748</td>
-      <td>17404</td>
-      <td>2020-03-02 20:34:50-05:00</td>
-      <td>2020-03-02</td>
-      <td>2020-03</td>
-      <td>20:34</td>
-      <td>20</td>
-      <td>Monday</td>
-      <td>2020</td>
-      <td>03</td>
+      <td>Tuesday</td>
+      <td>9077</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>1218010753434820614</td>
-      <td>RT @CBS_Herridge: READ: Letter to surveillance...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>7396</td>
-      <td>2020-01-16 22:22:47-05:00</td>
-      <td>2020-01-16</td>
-      <td>2020-01</td>
-      <td>22:22</td>
-      <td>22</td>
-      <td>Thursday</td>
-      <td>2020</td>
-      <td>01</td>
+      <td>Wednesday</td>
+      <td>8799</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>1304875170860015617</td>
-      <td>The Unsolicited Mail In Ballot Scam is a major...</td>
-      <td>f</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>80527</td>
-      <td>23502</td>
-      <td>2020-09-12 16:10:58-04:00</td>
-      <td>2020-09-12</td>
-      <td>2020-09</td>
-      <td>16:10</td>
-      <td>16</td>
-      <td>Saturday</td>
-      <td>2020</td>
-      <td>09</td>
+      <td>Thursday</td>
+      <td>8270</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>1218159531554897920</td>
-      <td>RT @MZHemingway: Very friendly telling of even...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>9081</td>
-      <td>2020-01-17 08:13:59-05:00</td>
-      <td>2020-01-17</td>
-      <td>2020-01</td>
-      <td>08:13</td>
-      <td>08</td>
       <td>Friday</td>
-      <td>2020</td>
-      <td>01</td>
+      <td>8236</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Saturday</td>
+      <td>6350</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Sunday</td>
+      <td>6161</td>
     </tr>
   </tbody>
 </table>
@@ -987,75 +1116,560 @@ trump.head()
 
 
 ```python
-deleted_tweets = trump.isDeleted.groupby(trump.isDeleted).count()
-fig, ax = plt.subplots()
-deleted_tweets.plot(kind = 'bar', figsize = (12,8))
-ax.set_xticklabels(['False', 'True'])
-ax.set_xlabel('Deleted Tweet?')
-ax.set_ylabel('Total Tweets')
-ax.set_title('How Often Does Trump Delete His Tweets?')
+# We will use seaborn to construct a bar graph
+p = sns.barplot(data=tweets_by_day, x = 'day_of_week', y='count', palette='muted')
+p.set_xlabel('Day of Week')
+p.set_ylabel('Total Tweets')
+p.set_title("Trump's Tweets by Day of Week")
 plt.show()
 ```
 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_33_0.png)
+![png](trump_twitter_nlp_files/trump_twitter_nlp_40_0.png)
+
+
+It appears that Trump tweets more during the week, but aside from this we are not learning much from this visualization. Let's try to see if we can find more valuable insights by adding hour of day into this analysis.
+
+
+```python
+# Preparing data for heatmap
+# Grouping by day of week and hour
+day_hour = trump.id.groupby([trump.day_of_week, trump.hour]).count().reset_index()
+# Create a pivot table to call aggregate sum function
+day_hour = pd.pivot_table(day_hour, values = 'id', index = 'day_of_week', columns = 'hour', aggfunc='sum')
+day_hour = day_hour.reindex((['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']))
+day_hour
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>hour</th>
+      <th>00</th>
+      <th>01</th>
+      <th>02</th>
+      <th>03</th>
+      <th>04</th>
+      <th>05</th>
+      <th>06</th>
+      <th>07</th>
+      <th>08</th>
+      <th>09</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+      <th>18</th>
+      <th>19</th>
+      <th>20</th>
+      <th>21</th>
+      <th>22</th>
+      <th>23</th>
+    </tr>
+    <tr>
+      <th>day_of_week</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Monday</th>
+      <td>103</td>
+      <td>76</td>
+      <td>37</td>
+      <td>10</td>
+      <td>32</td>
+      <td>79</td>
+      <td>311</td>
+      <td>617</td>
+      <td>545</td>
+      <td>481</td>
+      <td>447</td>
+      <td>353</td>
+      <td>319</td>
+      <td>368</td>
+      <td>441</td>
+      <td>524</td>
+      <td>577</td>
+      <td>379</td>
+      <td>296</td>
+      <td>311</td>
+      <td>490</td>
+      <td>467</td>
+      <td>540</td>
+      <td>394</td>
+    </tr>
+    <tr>
+      <th>Tuesday</th>
+      <td>203</td>
+      <td>110</td>
+      <td>55</td>
+      <td>52</td>
+      <td>50</td>
+      <td>96</td>
+      <td>316</td>
+      <td>568</td>
+      <td>542</td>
+      <td>553</td>
+      <td>542</td>
+      <td>470</td>
+      <td>416</td>
+      <td>452</td>
+      <td>566</td>
+      <td>636</td>
+      <td>652</td>
+      <td>302</td>
+      <td>289</td>
+      <td>280</td>
+      <td>452</td>
+      <td>576</td>
+      <td>523</td>
+      <td>376</td>
+    </tr>
+    <tr>
+      <th>Wednesday</th>
+      <td>307</td>
+      <td>114</td>
+      <td>86</td>
+      <td>53</td>
+      <td>87</td>
+      <td>156</td>
+      <td>386</td>
+      <td>455</td>
+      <td>577</td>
+      <td>615</td>
+      <td>545</td>
+      <td>430</td>
+      <td>375</td>
+      <td>413</td>
+      <td>625</td>
+      <td>627</td>
+      <td>639</td>
+      <td>369</td>
+      <td>286</td>
+      <td>244</td>
+      <td>316</td>
+      <td>404</td>
+      <td>395</td>
+      <td>295</td>
+    </tr>
+    <tr>
+      <th>Thursday</th>
+      <td>244</td>
+      <td>84</td>
+      <td>92</td>
+      <td>38</td>
+      <td>78</td>
+      <td>77</td>
+      <td>346</td>
+      <td>436</td>
+      <td>672</td>
+      <td>538</td>
+      <td>471</td>
+      <td>456</td>
+      <td>439</td>
+      <td>395</td>
+      <td>528</td>
+      <td>638</td>
+      <td>594</td>
+      <td>383</td>
+      <td>264</td>
+      <td>264</td>
+      <td>286</td>
+      <td>286</td>
+      <td>338</td>
+      <td>323</td>
+    </tr>
+    <tr>
+      <th>Friday</th>
+      <td>327</td>
+      <td>83</td>
+      <td>61</td>
+      <td>56</td>
+      <td>75</td>
+      <td>168</td>
+      <td>271</td>
+      <td>565</td>
+      <td>540</td>
+      <td>458</td>
+      <td>469</td>
+      <td>478</td>
+      <td>443</td>
+      <td>439</td>
+      <td>499</td>
+      <td>613</td>
+      <td>563</td>
+      <td>295</td>
+      <td>299</td>
+      <td>296</td>
+      <td>217</td>
+      <td>326</td>
+      <td>330</td>
+      <td>365</td>
+    </tr>
+    <tr>
+      <th>Saturday</th>
+      <td>263</td>
+      <td>72</td>
+      <td>36</td>
+      <td>72</td>
+      <td>76</td>
+      <td>101</td>
+      <td>194</td>
+      <td>474</td>
+      <td>526</td>
+      <td>365</td>
+      <td>204</td>
+      <td>242</td>
+      <td>221</td>
+      <td>189</td>
+      <td>246</td>
+      <td>250</td>
+      <td>317</td>
+      <td>411</td>
+      <td>479</td>
+      <td>361</td>
+      <td>251</td>
+      <td>250</td>
+      <td>417</td>
+      <td>333</td>
+    </tr>
+    <tr>
+      <th>Sunday</th>
+      <td>202</td>
+      <td>74</td>
+      <td>38</td>
+      <td>71</td>
+      <td>64</td>
+      <td>72</td>
+      <td>219</td>
+      <td>449</td>
+      <td>395</td>
+      <td>365</td>
+      <td>356</td>
+      <td>161</td>
+      <td>201</td>
+      <td>160</td>
+      <td>253</td>
+      <td>274</td>
+      <td>269</td>
+      <td>258</td>
+      <td>394</td>
+      <td>283</td>
+      <td>394</td>
+      <td>532</td>
+      <td>470</td>
+      <td>207</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+p = sns.heatmap(data = day_hour, cbar_kws={'label': 'Tweets per Hour'}, cmap='flare')
+p.set_title("When Does Our President Like to Tweet?")
+p.set_xlabel('Hour of Day (U.S. Eastern Time)')
+p.set_ylabel('Day of Week')
+plt.show()
+```
+
+
+![png](trump_twitter_nlp_files/trump_twitter_nlp_43_0.png)
+
+
+This is more interesting. It appears that Trump does most of his tweeting during the work week and between the hours of 7 AM and 4 PM. This heatmap helps us to visualize the density of the tweet activity within this period, but it also shows us that aside from the early hours of the morning, Trump is generally quite active. 
+
+It is clear from our heatmap that Donald Trump does most of his tweeting during the workday. From these insights, I cannot help but ask: how does Donald Trump manage to get any work done? 
+
+## Deleted Tweets
+How often does Donald delete his tweets? 
+
+
+```python
+deleted_tweets = trump.groupby(['isDeleted']).id.count()
+deleted_tweets = pd.DataFrame({'status': ['False', 'True'], 'count':deleted_tweets.values})
+deleted_tweets
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>status</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>False</td>
+      <td>54050</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>True</td>
+      <td>1040</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+p = sns.barplot(data = deleted_tweets, x = 'count', y = 'status', orient='h', palette='muted')
+p.set_title("How Many of Donald Trump's Tweets Get Deleted?")
+p.set_xlabel('Number of Tweets')
+p.set_ylabel('Tweet Deleted')
+plt.show()
+```
+
+
+![png](trump_twitter_nlp_files/trump_twitter_nlp_48_0.png)
 
 
 ## Deleted Tweets over Time
 
 
 ```python
-deleted_my = trump[trump.isDeleted == 't'].groupby(trump.date_my).id.count().reset_index()
-deleted_my = deleted_my.rename(columns={'id':'num_deleted'})
+# Creating a pivot table so that we can aggregate data based on month of tweet and whether the tweet has been deleted
+deleted_df = trump.groupby(['isDeleted', 'date_my']).id.count().reset_index()
+deleted_df = pd.pivot_table(data = deleted_df, index='date_my', columns='isDeleted', values = 'id', aggfunc='sum')
+deleted_df = deleted_df.rename(columns={'f':'False', 't':'True'})
+deleted_df.head()
 ```
 
 
-```python
-not_deleted_my = trump[trump.isDeleted == 'f'].groupby(trump.date_my).id.count().reset_index()
-not_deleted_my = not_deleted_my.rename(columns={'id':'num_not_deleted'})
-```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>isDeleted</th>
+      <th>False</th>
+      <th>True</th>
+    </tr>
+    <tr>
+      <th>date_my</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2009-05</th>
+      <td>21.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-06</th>
+      <td>11.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-07</th>
+      <td>5.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-08</th>
+      <td>7.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-09</th>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
-deleted_or_not = pd.merge(deleted_my, not_deleted_my)
-deleted_or_not.date_my = deleted_or_not.date_my.apply(lambda x: dt.strptime(x, '%Y-%m'))
-```
-
-
-```python
-fig, ax = plt.subplots(figsize = (24,10))
-plt.plot(deleted_or_not.date_my, deleted_or_not.num_deleted, c='red')
-plt.plot(deleted_or_not.date_my, deleted_or_not.num_not_deleted, c='blue')
-ax.set_title('How Often Does Trump Delete His Tweets?')
-ax.set_ylabel('Total Tweets')
-ax.set_xlabel('Year')
-plt.legend(labels= ['Deleted Tweets', 'Preserved Tweets'])
+# Plotting the pivot table using pandas.DataFrame.plot method
+p = deleted_df.plot()
+p.set_title('Deleted vs. Saved Tweets')
+p.set_xlabel('Date')
+p.set_ylabel('Number of Tweets')
 plt.show()
 ```
 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_38_0.png)
+![png](trump_twitter_nlp_files/trump_twitter_nlp_51_0.png)
 
+
+Interesting! We can now see that it is very rare for Trump to delete his tweets. However, deletions have increased in recent years. This is unsurprising, as presidents have staff and advisors who will encourage them to delete unpopular opinions.
 
 ## Retweets
 
 
 ```python
-retweets = trump.isRetweet.groupby(trump.isRetweet).count()
-fig, ax = plt.subplots(figsize = (12,8))
-retweets.plot(kind = 'bar')
-ax.set_ylabel('Total Tweets')
-ax.set_title("What Portion of Trump's Tweets are Retweets?")
-ax.set_xticklabels(['False', 'True'])
-ax.set_xlabel('Retweet?')
+# Aggregating on retweet column
+retweet_df = trump.groupby(['isRetweet', 'date_my']).id.count().reset_index()
+retweet_df = pd.pivot_table(data = retweet_df, index='date_my', columns='isRetweet', values = 'id', aggfunc='sum')
+retweet_df = retweet_df.rename(columns={'f':'False', 't':'True'})
+retweet_df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>isRetweet</th>
+      <th>False</th>
+      <th>True</th>
+    </tr>
+    <tr>
+      <th>date_my</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2009-05</th>
+      <td>21.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-06</th>
+      <td>11.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-07</th>
+      <td>5.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-08</th>
+      <td>7.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2009-09</th>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Plotting the pivot table using pandas.DataFrame.plot method
+p = retweet_df.plot()
+p.set_title('Retweets vs. Original Tweets')
+p.set_xlabel('Date')
+p.set_ylabel('Number of Tweets')
 plt.show()
 ```
 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_40_0.png)
+![png](trump_twitter_nlp_files/trump_twitter_nlp_55_0.png)
 
 
-It appears that the majority of Trump's tweets are retweets. This is something we should keep in mind as we move forward into text analysis.
+Overall, it appears that the majority of Trump's tweets are original. However, more recently, it appears that Trump retweets roughly as frequently as he writes his own tweets. 
 
 # Applying NLP to Analyze Trump's Tweets
 
@@ -1460,7 +2074,7 @@ Before we move on to sentiment analysis, let's take a quick look at the most com
 # Unpacking the list of words
 dt_words = [item for sublist in dt_tokens_norm.to_list() for item in sublist]
 rt_words = [item for sublist in rt_tokens_norm.to_list() for item in sublist]
-dt_words
+dt_words[:10]
 ```
 
 
@@ -1475,998 +2089,7 @@ dt_words
      'back',
      'great',
      'city',
-     'charlotte',
-     'north',
-     'carolina',
-     'thousand',
-     'hardworking',
-     'american',
-     'patriot',
-     'love',
-     'country',
-     'cherish',
-     'value',
-     'respect',
-     'law',
-     'always',
-     'put',
-     'america',
-     'first',
-     'thank',
-     'wonderful',
-     'evening',
-     'kag',
-     'unsolicited',
-     'mail',
-     'ballot',
-     'scam',
-     'major',
-     'threat',
-     'democracy',
-     'amp',
-     'democrat',
-     'know',
-     'almost',
-     'recent',
-     'election',
-     'use',
-     'system',
-     'even',
-     'though',
-     'much',
-     'small',
-     'amp',
-     'far',
-     'ballot',
-     'count',
-     'end',
-     'disaster',
-     'large',
-     'number',
-     'miss',
-     'ballot',
-     'amp',
-     'fraud',
-     'im',
-     'run',
-     'proud',
-     'democrat',
-     'senate',
-     'sleepy',
-     'joe',
-     'biden',
-     'today',
-     'go',
-     'get',
-     'bad',
-     'sustainable',
-     'county',
-     'china',
-     'u',
-     'get',
-     'little',
-     'exercise',
-     'morning',
-     'thank',
-     'elise',
-     'per',
-     'request',
-     'joe',
-     'huge',
-     'win',
-     'today',
-     'unite',
-     'state',
-     'peace',
-     'world',
-     'sudan',
-     'agree',
-     'peace',
-     'normalization',
-     'agreement',
-     'israel',
-     'unite',
-     'arab',
-     'emirate',
-     'bahrain',
-     'thats',
-     'three',
-     'arab',
-     'country',
-     'matter',
-     'week',
-     'follow',
-     'thank',
-     'megyn',
-     'day',
-     'maga',
-     'nobody',
-     'show',
-     'obamas',
-     'hate',
-     'lace',
-     'speech',
-     'people',
-     'energy',
-     'still',
-     'well',
-     'joe',
-     'land',
-     'ohio',
-     'see',
-     'little',
-     'thank',
-     'ohio',
-     'vote',
-     'great',
-     'ohio',
-     'leave',
-     'wisconsin',
-     'see',
-     'little',
-     'thank',
-     'ohio',
-     'vote',
-     'terrible',
-     'thing',
-     'biden',
-     'say',
-     'rig',
-     'election',
-     'land',
-     'wisconsin',
-     'big',
-     'crowd',
-     'way',
-     'great',
-     'show',
-     'jessebwatters',
-     'tonight',
-     'watch',
-     'way',
-     'ohio',
-     'wisconsin',
-     'law',
-     'enforcement',
-     'watch',
-     'involve',
-     'dishonest',
-     'thank',
-     'wisconsin',
-     'important',
-     'election',
-     'history',
-     'country',
-     'vote',
-     'continue',
-     'bring',
-     'back',
-     'job',
-     'lower',
-     'drug',
-     'price',
-     'support',
-     'police',
-     'protect',
-     'defend',
-     'border',
-     'ensure',
-     'product',
-     'proudly',
-     'stamp',
-     'phrase',
-     'make',
-     'usa',
-     'long',
-     'president',
-     'always',
-     'stand',
-     'hero',
-     'law',
-     'enforcement',
-     'joe',
-     'biden',
-     'wont',
-     'wisconsin',
-     'vote',
-     'maga',
-     'true',
-     'thank',
-     'pensacola',
-     'florida',
-     'together',
-     'go',
-     'make',
-     'america',
-     'great',
-     'debate',
-     'poll',
-     'average',
-     'trump',
-     'sleepy',
-     'joe',
-     'biden',
-     'economy',
-     'great',
-     'ready',
-     'set',
-     'new',
-     'record',
-     'best',
-     'ever',
-     'biden',
-     'destroy',
-     'everything',
-     'massive',
-     'tax',
-     'increase',
-     'dont',
-     'let',
-     'happen',
-     'fake',
-     'news',
-     'talk',
-     'case',
-     'case',
-     'case',
-     'include',
-     'many',
-     'low',
-     'risk',
-     'people',
-     'medium',
-     'everything',
-     'possible',
-     'create',
-     'fear',
-     'prior',
-     'november',
-     'rd',
-     'case',
-     'test',
-     'way',
-     'far',
-     'best',
-     'world',
-     'mortality',
-     'rate',
-     'plus',
-     'voteearlyday',
-     'maga',
-     'sound',
-     'like',
-     'typical',
-     'washington',
-     'politician',
-     'im',
-     'politician',
-     'always',
-     'play',
-     'rule',
-     'washington',
-     'establishment',
-     'elect',
-     'fight',
-     'hard',
-     'anyone',
-     'ever',
-     'could',
-     'sit',
-     'watch',
-     'take',
-     'advantage',
-     'anymore',
-     'come',
-     'stand',
-     'way',
-     'stand',
-     'guard',
-     'country',
-     'love',
-     'year',
-     'watch',
-     'one',
-     'betrayal',
-     'another',
-     'politician',
-     'like',
-     'joe',
-     'biden',
-     'sell',
-     'american',
-     'worker',
-     'every',
-     'turnshattering',
-     'life',
-     'million',
-     'american',
-     'family',
-     'family',
-     'rake',
-     'million',
-     'dollar',
-     'joe',
-     'biden',
-     'corrupt',
-     'politician',
-     'compromise',
-     'china',
-     'desperate',
-     'biden',
-     'win',
-     'biden',
-     'win',
-     'china',
-     'win',
-     'china',
-     'america',
-     'corruption',
-     'exactly',
-     'decide',
-     'run',
-     'president',
-     'first',
-     'place',
-     'thank',
-     'great',
-     'american',
-     'patriot',
-     'village',
-     'florida',
-     'maga',
-     'th',
-     'anniversary',
-     'horrendous',
-     'attack',
-     'unite',
-     'state',
-     'marine',
-     'sailor',
-     'soldier',
-     'beirut',
-     'honor',
-     'hero',
-     'lose',
-     'life',
-     'day',
-     'never',
-     'forget',
-     'semper',
-     'fi',
-     'joe',
-     'bidens',
-     'response',
-     'hn',
-     'swine',
-     'flu',
-     'far',
-     'less',
-     'lethal',
-     'covid',
-     'one',
-     'weak',
-     'worst',
-     'history',
-     'fight',
-     'epidemic',
-     'pandemic',
-     'pathetic',
-     'involve',
-     'say',
-     'joe',
-     'didnt',
-     'clue',
-     'seanparnellusa',
-     'bright',
-     'star',
-     'pennsylvania',
-     'military',
-     'vet',
-     'low',
-     'tax',
-     'nd',
-     'amendment',
-     'totally',
-     'protect',
-     'opponent',
-     'weak',
-     'ineffective',
-     'puppet',
-     'pelosi',
-     'new',
-     'radical',
-     'leave',
-     'friend',
-     'vote',
-     'sean',
-     'parnell',
-     'important',
-     'vote',
-     'republican',
-     'house',
-     'break',
-     'away',
-     'pelosi',
-     'high',
-     'tax',
-     'new',
-     'radical',
-     'leave',
-     'friend',
-     'protect',
-     'nd',
-     'amendment',
-     'military',
-     'vet',
-     'sooo',
-     'much',
-     'pennsylvania',
-     'ballot',
-     'mistake',
-     'make',
-     'opinion',
-     'purpose',
-     'democrat',
-     'governor',
-     'put',
-     'republican',
-     'particular',
-     'seanparnellusa',
-     'great',
-     'risk',
-     'corrupt',
-     'politics',
-     'pennsylvania',
-     'must',
-     'investigate',
-     'immediately',
-     'way',
-     'philadelphia',
-     'control',
-     'thejusticedept',
-     'great',
-     'magagras',
-     'rally',
-     'today',
-     'wonderful',
-     'long',
-     'island',
-     'cut',
-     'tax',
-     'stop',
-     'crime',
-     'vote',
-     'trump',
-     'city',
-     'state',
-     'mess',
-     'lose',
-     'thank',
-     'congratulation',
-     'senronjohnson',
-     'dog',
-     'pursuit',
-     'chairman',
-     'homeland',
-     'political',
-     'corruption',
-     'thank',
-     'new',
-     'hampshire',
-     'amaze',
-     'carney',
-     'joe',
-     'bidens',
-     'energy',
-     'plan',
-     'would',
-     'eviscerate',
-     'wisconsin',
-     'sand',
-     'miner',
-     'thank',
-     'maine',
-     'maga',
-     'thank',
-     'rabbi',
-     'congratulation',
-     'armenian',
-     'prime',
-     'minister',
-     'nikol',
-     'pashinyan',
-     'azerbaijani',
-     'president',
-     'ilham',
-     'aliyev',
-     'agree',
-     'adhere',
-     'cease',
-     'fire',
-     'effective',
-     'midnight',
-     'many',
-     'life',
-     'save',
-     'proud',
-     'team',
-     'secpompeo',
-     'amp',
-     'steve',
-     'biegun',
-     'amp',
-     'whnsc',
-     'get',
-     'deal',
-     'great',
-     'people',
-     'vote',
-     'trump',
-     'biden',
-     'dump',
-     'new',
-     'hampshire',
-     'dem',
-     'primary',
-     'leave',
-     'early',
-     'first',
-     'big',
-     'victory',
-     'honor',
-     'maine',
-     'suburban',
-     'woman',
-     'strong',
-     'president',
-     'trump',
-     'watch',
-     'minute',
-     'clip',
-     'texas',
-     'pennsylvania',
-     'ohio',
-     'others',
-     'please',
-     'watch',
-     'party',
-     'joe',
-     'stop',
-     'fracking',
-     'immediately',
-     'million',
-     'job',
-     'lose',
-     'energy',
-     'price',
-     'soar',
-     'vote',
-     'trump',
-     'biden',
-     'make',
-     'another',
-     'big',
-     'mistake',
-     'totally',
-     'mix',
-     'two',
-     'crime',
-     'bill',
-     'didnt',
-     'clue',
-     'usual',
-     'also',
-     'freely',
-     'use',
-     'term',
-     'super',
-     'predator',
-     'nasty',
-     'rumor',
-     'senatorcollins',
-     'maine',
-     'support',
-     'great',
-     'unite',
-     'state',
-     'supreme',
-     'court',
-     'nominee',
-     'well',
-     'didnt',
-     'support',
-     'healthcare',
-     'opening',
-     'square',
-     'mile',
-     'ocean',
-     'maine',
-     'different',
-     'worth',
-     'work',
-     'big',
-     'reference',
-     'rather',
-     'big',
-     'tech',
-     'properly',
-     'point',
-     'twitter',
-     'fake',
-     'trend',
-     'section',
-     'steve',
-     'scully',
-     'cspan',
-     'bad',
-     'week',
-     'name',
-     'announce',
-     'say',
-     'would',
-     'appropriate',
-     'conflict',
-     'right',
-     'say',
-     'hack',
-     'wasnt',
-     'right',
-     'big',
-     'mistake',
-     'confide',
-     'lowlife',
-     'loser',
-     'like',
-     'mooch',
-     'sad',
-     'good',
-     'review',
-     'last',
-     'night',
-     'nbcnews',
-     'town',
-     'hall',
-     'miami',
-     'thank',
-     'poll',
-     'number',
-     'look',
-     'strong',
-     'big',
-     'crowd',
-     'great',
-     'enthusiasm',
-     'massive',
-     'red',
-     'wave',
-     'come',
-     'biden',
-     'lie',
-     'pennsylvania',
-     'thank',
-     'thank',
-     'libertarian',
-     'get',
-     'fast',
-     'vote',
-     'trump',
-     'process',
-     'long',
-     'begin',
-     'happen',
-     'fast',
-     'great',
-     'sleepy',
-     'joe',
-     'biden',
-     'bad',
-     'show',
-     'last',
-     'night',
-     'despite',
-     'fact',
-     'gstephanopoulos',
-     'didnt',
-     'ask',
-     'question',
-     'corrupt',
-     'politician',
-     'big',
-     'tech',
-     'amp',
-     'lamestream',
-     'medium',
-     'work',
-     'hard',
-     'hide',
-     'corruption',
-     'ammar',
-     'puppet',
-     'nancy',
-     'pelosi',
-     'radical',
-     'leave',
-     'spell',
-     'high',
-     'tax',
-     'weak',
-     'military',
-     'vet',
-     'support',
-     'obliteration',
-     'nd',
-     'amendment',
-     'vote',
-     'darrell',
-     'issa',
-     'darrell',
-     'great',
-     'complete',
-     'total',
-     'endorsement',
-     'never',
-     'let',
-     'warrior',
-     'jason',
-     'write',
-     'new',
-     'book',
-     'fantastic',
-     'order',
-     'make',
-     'jason',
-     'deserve',
-     'thank',
-     'twitter',
-     'shut',
-     'entire',
-     'network',
-     'slow',
-     'spread',
-     'negative',
-     'biden',
-     'news',
-     'obamagate',
-     'pennsylvania',
-     'appeal',
-     'court',
-     'turn',
-     'trump',
-     'administration',
-     'request',
-     'poll',
-     'watcher',
-     'monitor',
-     'satellite',
-     'election',
-     'office',
-     'oann',
-     'terrible',
-     'seek',
-     'fair',
-     'vote',
-     'count',
-     'lead',
-     'bad',
-     'thing',
-     'bad',
-     'intention',
-     'much',
-     'disgraceful',
-     'head',
-     'new',
-     'orleans',
-     'usdot',
-     'fund',
-     'neworleansrta',
-     'happy',
-     'support',
-     'bus',
-     'service',
-     'major',
-     'fleet',
-     'improvement',
-     'great',
-     'people',
-     'louisiana',
-     'help',
-     'keep',
-     'move',
-     'safely',
-     'dont',
-     'see',
-     'way',
-     'nancy',
-     'pelosi',
-     'cryin',
-     'chuck',
-     'schumer',
-     'right',
-     'great',
-     'american',
-     'worker',
-     'wonderful',
-     'usa',
-     'stimulus',
-     'primary',
-     'focus',
-     'bail',
-     'poorly',
-     'run',
-     'high',
-     'crime',
-     'democrat',
-     'city',
-     'state',
-     'jimoberweis',
-     'terrific',
-     'congressman',
-     'illinois',
-     'successful',
-     'businessman',
-     'create',
-     'job',
-     'lower',
-     'tax',
-     'defend',
-     'law',
-     'amp',
-     'order',
-     'protect',
-     'second',
-     'amendment',
-     'radical',
-     'leave',
-     'jim',
-     'complete',
-     'total',
-     'endorsement',
-     'il',
-     'eric',
-     'esshaki',
-     'esshakicongress',
-     'tremendous',
-     'advocate',
-     'michigan',
-     'first',
-     'chaldean',
-     'congress',
-     'help',
-     'u',
-     'lower',
-     'tax',
-     'defend',
-     'second',
-     'amendment',
-     'deliver',
-     'great',
-     'healthcare',
-     'eric',
-     'complete',
-     'total',
-     'endorsement',
-     'mi',
-     'tonight',
-     'pm',
-     'enjoy',
-     'p',
-     'tony',
-     'stop',
-     'wear',
-     'washington',
-     'national',
-     'mask',
-     'two',
-     'reason',
-     'number',
-     'one',
-     'high',
-     'standard',
-     'expose',
-     'number',
-     'two',
-     'keep',
-     'remind',
-     'tony',
-     'throw',
-     'perhaps',
-     'worst',
-     'first',
-     'pitch',
-     'history',
-     'baseball',
-     'drtony',
-     'fauci',
-     'say',
-     'dont',
-     'allow',
-     'television',
-     'yet',
-     'saw',
-     'last',
-     'night',
-     'minute',
-     'seem',
-     'get',
-     'airtime',
-     'anybody',
-     'since',
-     'late',
-     'great',
-     'bob',
-     'hope',
-     'ask',
-     'tony',
-     'make',
-     'well',
-     'decision',
-     'say',
-     'mask',
-     'amp',
-     'let',
-     'china',
-     'also',
-     'bad',
-     'arm',
-     'great',
-     'news',
-     'new',
-     'government',
-     'sudan',
-     'make',
-     'great',
-     'progress',
-     'agree',
-     'pay',
-     'million',
-     'u',
-     'terror',
-     'victim',
-     'family',
-     'deposit',
-     'lift',
-     'sudan',
-     'state',
-     'sponsor',
-     'terrorism',
-     'list',
-     'long',
-     'last',
-     'justice',
-     'american',
-     'people',
-     'big',
-     'step',
-     'sudan',
-     'head',
-     'arizona',
-     'see',
-     'soon',
-     'last',
-     'week',
-     'joe',
-     'biden',
-     'make',
-     'perhaps',
-     'shock',
-     'admission',
-     'ever',
-     'utter',
-     'history',
-     'presidential',
-     'debate',
-     'live',
-     'television',
-     'joe',
-     'biden',
-     'confirm',
-     'plan',
-     'abolish',
-     'entire',
-     'u',
-     'oil',
-     'industrythat',
-     ...]
+     'charlotte']
 
 
 
@@ -2489,7 +2112,7 @@ rt_ngrams = pd.concat([rt_bigrams, rt_trigrams])
 
 
 ```python
-fig, ax = plt.subplots(1, 2, figsize = (10,23), gridspec_kw={'width_ratios':[1,1], 'wspace':0.1, 'hspace':0.1})
+fig, ax = plt.subplots(1, 2, figsize = (10,20), gridspec_kw={'width_ratios':[1,1], 'wspace':0.1, 'hspace':0.1})
 bar_ax = ax[0]
 dt_ngrams[::-1].plot.barh(ax = bar_ax, color = 'lightcoral')
 bar_ax.set_xlim(bar_ax.get_xlim()[::-1])
@@ -2513,10 +2136,13 @@ plt.show()
 ```
 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_72_0.png)
+![png](trump_twitter_nlp_files/trump_twitter_nlp_87_0.png)
 
 
 # VADER Sentiment Analysis
+VADER (Valence Aware Dictionary and sEntiment Reasoner) is a sentiment analysis tool that is specifically tuned for the analysis of social media. We will now use the VADER analysis tool, available through NLTK, to analyze the Trump's sentiment in his tweets over time. 
+
+We will first take a quick look at the sentiment analysis of Trump's entire Twitter archive, but we will then shift our attention to the period from 2015-Present, as it is during this period that Donald Trump has become involved in American politics. 
 
 
 ```python
@@ -2582,6 +2208,7 @@ original_tweets.head()
       <th>vader_neg</th>
       <th>vader_neu</th>
       <th>vader_pos</th>
+      <th>sentiment</th>
     </tr>
   </thead>
   <tbody>
@@ -2607,6 +2234,7 @@ original_tweets.head()
       <td>0.231</td>
       <td>0.598</td>
       <td>0.171</td>
+      <td>neu</td>
     </tr>
     <tr>
       <th>1</th>
@@ -2630,6 +2258,7 @@ original_tweets.head()
       <td>0.000</td>
       <td>0.553</td>
       <td>0.447</td>
+      <td>pos</td>
     </tr>
     <tr>
       <th>3</th>
@@ -2653,6 +2282,7 @@ original_tweets.head()
       <td>0.294</td>
       <td>0.706</td>
       <td>0.000</td>
+      <td>neg</td>
     </tr>
     <tr>
       <th>6</th>
@@ -2676,6 +2306,7 @@ original_tweets.head()
       <td>0.093</td>
       <td>0.813</td>
       <td>0.093</td>
+      <td>neu</td>
     </tr>
     <tr>
       <th>7</th>
@@ -2699,6 +2330,7 @@ original_tweets.head()
       <td>0.000</td>
       <td>1.000</td>
       <td>0.000</td>
+      <td>neu</td>
     </tr>
   </tbody>
 </table>
@@ -2708,386 +2340,18 @@ original_tweets.head()
 
 
 ```python
-# VADER Sentiment Scores for Retweets
-trump_retweets['polarity_scores'] = trump_retweets.text.apply(sentiment_scores) 
-trump_retweets['vader_compound'] = trump_retweets.polarity_scores.apply(lambda x: x['compound'])
-trump_retweets.head()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>id</th>
-      <th>text</th>
-      <th>isRetweet</th>
-      <th>isDeleted</th>
-      <th>device</th>
-      <th>favorites</th>
-      <th>retweets</th>
-      <th>date</th>
-      <th>date_dmy</th>
-      <th>date_my</th>
-      <th>time</th>
-      <th>hour</th>
-      <th>day_of_week</th>
-      <th>year</th>
-      <th>month</th>
-      <th>polarity_scores</th>
-      <th>vader_compound</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2</th>
-      <td>1218010753434820614</td>
-      <td>RT @CBS_Herridge: READ: Letter to surveillance...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>7396</td>
-      <td>2020-01-16 22:22:47-05:00</td>
-      <td>2020-01-16</td>
-      <td>2020-01</td>
-      <td>22:22</td>
-      <td>22</td>
-      <td>Thursday</td>
-      <td>2020</td>
-      <td>01</td>
-      <td>{'neg': 0.0, 'neu': 1.0, 'pos': 0.0, 'compound...</td>
-      <td>0.0000</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1218159531554897920</td>
-      <td>RT @MZHemingway: Very friendly telling of even...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>9081</td>
-      <td>2020-01-17 08:13:59-05:00</td>
-      <td>2020-01-17</td>
-      <td>2020-01</td>
-      <td>08:13</td>
-      <td>08</td>
-      <td>Friday</td>
-      <td>2020</td>
-      <td>01</td>
-      <td>{'neg': 0.0, 'neu': 0.857, 'pos': 0.143, 'comp...</td>
-      <td>0.5413</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>1217962723234983937</td>
-      <td>RT @WhiteHouse: President @realDonaldTrump ann...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>25048</td>
-      <td>2020-01-16 19:11:56-05:00</td>
-      <td>2020-01-16</td>
-      <td>2020-01</td>
-      <td>19:11</td>
-      <td>19</td>
-      <td>Thursday</td>
-      <td>2020</td>
-      <td>01</td>
-      <td>{'neg': 0.0, 'neu': 0.755, 'pos': 0.245, 'comp...</td>
-      <td>0.6360</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>1319496349092511744</td>
-      <td>RT @EricTrump: https://t.co/NcrNdOSfIV</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>8921</td>
-      <td>2020-10-23 00:30:19-04:00</td>
-      <td>2020-10-23</td>
-      <td>2020-10</td>
-      <td>00:30</td>
-      <td>00</td>
-      <td>Friday</td>
-      <td>2020</td>
-      <td>10</td>
-      <td>{'neg': 0.0, 'neu': 1.0, 'pos': 0.0, 'compound...</td>
-      <td>0.0000</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>1236502342121541632</td>
-      <td>RT @GOPChairwoman: The economic boom continues...</td>
-      <td>t</td>
-      <td>f</td>
-      <td>Twitter for iPhone</td>
-      <td>0</td>
-      <td>8681</td>
-      <td>2020-03-07 23:01:46-05:00</td>
-      <td>2020-03-07</td>
-      <td>2020-03</td>
-      <td>23:01</td>
-      <td>23</td>
-      <td>Saturday</td>
-      <td>2020</td>
-      <td>03</td>
-      <td>{'neg': 0.0, 'neu': 1.0, 'pos': 0.0, 'compound...</td>
-      <td>0.0000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-# Grouping compound sentiment scores by day to get average compound score/day
+# Grouping sentiment scores by day to get average daily sentiment scores
 dt_sentiment_dmy = original_tweets.vader_compound.groupby(original_tweets.date_dmy).mean().reset_index()
 dt_sentiment_dmy['date_dmy'] = dt_sentiment_dmy.date_dmy.apply(lambda x: dt.strptime(x, '%Y-%m-%d'))
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>date_dmy</th>
-      <th>vader_compound</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2009-05-04</td>
-      <td>0.648350</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2009-05-08</td>
-      <td>0.323400</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2009-05-12</td>
-      <td>0.161750</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2009-05-13</td>
-      <td>0.750600</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>2009-05-14</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>3433</th>
-      <td>2020-11-02</td>
-      <td>0.097474</td>
-    </tr>
-    <tr>
-      <th>3434</th>
-      <td>2020-11-03</td>
-      <td>0.342069</td>
-    </tr>
-    <tr>
-      <th>3435</th>
-      <td>2020-11-04</td>
-      <td>-0.175187</td>
-    </tr>
-    <tr>
-      <th>3436</th>
-      <td>2020-11-05</td>
-      <td>-0.066383</td>
-    </tr>
-    <tr>
-      <th>3437</th>
-      <td>2020-11-06</td>
-      <td>0.121970</td>
-    </tr>
-  </tbody>
-</table>
-<p>3438 rows × 2 columns</p>
-</div>
-
-
-
-
 ```python
-# Repeating the grouping, but this time by month
-dt_sentiment_my = original_tweets.vader_compound.groupby(original_tweets.date_my).mean().reset_index()
-dt_sentiment_my['date_my'] = dt_sentiment_my.date_my.apply(lambda x: dt.strptime(x, '%Y-%m'))
-dt_sentiment_my['dates'] = dt_sentiment_my.date_my.apply(mpl.dates.date2num)
-dt_sentiment_my
+date_plotter(dt_sentiment_dmy, 'date_dmy', 'vader_compound', increments='year', title = 'Trump Tweet Sentiment Since 2015 \n (VADER Compound Score)', xlabel='Year',ylabel='Average Daily Sentiment ')
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>date_my</th>
-      <th>vader_compound</th>
-      <th>dates</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2009-05-01</td>
-      <td>0.349590</td>
-      <td>733528.0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2009-06-01</td>
-      <td>0.316245</td>
-      <td>733559.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2009-07-01</td>
-      <td>0.335540</td>
-      <td>733589.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2009-08-01</td>
-      <td>0.113029</td>
-      <td>733620.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>2009-09-01</td>
-      <td>0.189833</td>
-      <td>733651.0</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>134</th>
-      <td>2020-07-01</td>
-      <td>0.079375</td>
-      <td>737607.0</td>
-    </tr>
-    <tr>
-      <th>135</th>
-      <td>2020-08-01</td>
-      <td>0.129953</td>
-      <td>737638.0</td>
-    </tr>
-    <tr>
-      <th>136</th>
-      <td>2020-09-01</td>
-      <td>0.157468</td>
-      <td>737669.0</td>
-    </tr>
-    <tr>
-      <th>137</th>
-      <td>2020-10-01</td>
-      <td>0.187996</td>
-      <td>737699.0</td>
-    </tr>
-    <tr>
-      <th>138</th>
-      <td>2020-11-01</td>
-      <td>0.099425</td>
-      <td>737730.0</td>
-    </tr>
-  </tbody>
-</table>
-<p>139 rows × 3 columns</p>
-</div>
-
-
-
-
-```python
-fig, ax = plt.subplots(figsize = (24,10))
-
-sent_ax = ax
-dt_sentiment_dmy.plot(kind = 'line', x = 'date_dmy', y = 'vader_compound', ax = sent_ax, alpha = 0.8)
-dt_sentiment_dmy.plot(kind = 'scatter', x = 'date_dmy', y = 'vader_compound', ax = sent_ax, c = 'red', alpha = 0.5)
-#dt_sentiment_dmy.plot(kind = 'scatter', x = 'date_dmy', y = 'vader_compound', ax = sent_ax, c = dt_sentiment_dmy.vader_compound, cmap = 'jet')
-sent_ax.set_title("Sentiment of Donald Trump's Tweets")
-sent_ax.set_xlabel("Year")
-sent_ax.set_ylabel('Sentiment (Vader Compound Score)')
-plt.legend(['Vader Compound Sentiment Score'])
-
-# Creating a line of best fit
-plt.axhline(c='black')
-
-# Uncomment the below to save a copy of the graph
-#plt.savefig('trump_tweet_compound_sentiment_full.png')
-plt.show()
-```
-
-
-![png](trump_twitter_analysis_files/trump_twitter_analysis_79_0.png)
+![png](trump_twitter_nlp_files/trump_twitter_nlp_92_0.png)
 
 
 ### Zooming in on the Presidential Years (2015-Present)
@@ -3118,8 +2382,8 @@ presidency_tweets.year.value_counts()
 
 
 ```python
-presidency_tweets_sent = presidency_tweets.vader_compound.groupby(presidency_tweets.date_dmy).mean().reset_index()
-presidency_tweets_sent
+presidency_tweets_sent = presidency_tweets[['vader_pos', 'vader_neu', 'vader_neg', 'vader_compound']].groupby(presidency_tweets.date_dmy).mean().reset_index()
+presidency_tweets_sent.describe()
 ```
 
 
@@ -3143,189 +2407,110 @@ presidency_tweets_sent
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>date_dmy</th>
+      <th>vader_pos</th>
+      <th>vader_neu</th>
+      <th>vader_neg</th>
       <th>vader_compound</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>2015-01-01</td>
-      <td>0.473632</td>
+      <th>count</th>
+      <td>2113.000000</td>
+      <td>2113.000000</td>
+      <td>2113.000000</td>
+      <td>2113.000000</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>2015-01-02</td>
-      <td>0.325429</td>
+      <th>mean</th>
+      <td>0.176317</td>
+      <td>0.747679</td>
+      <td>0.076004</td>
+      <td>0.204113</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>2015-01-03</td>
-      <td>0.199900</td>
+      <th>std</th>
+      <td>0.075179</td>
+      <td>0.073817</td>
+      <td>0.049175</td>
+      <td>0.255197</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>2015-01-04</td>
-      <td>0.288769</td>
+      <th>min</th>
+      <td>0.000000</td>
+      <td>0.264000</td>
+      <td>0.000000</td>
+      <td>-0.966500</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>2015-01-05</td>
-      <td>0.321141</td>
+      <th>25%</th>
+      <td>0.130625</td>
+      <td>0.707966</td>
+      <td>0.041000</td>
+      <td>0.049460</td>
     </tr>
     <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
+      <th>50%</th>
+      <td>0.170313</td>
+      <td>0.750105</td>
+      <td>0.071833</td>
+      <td>0.208300</td>
     </tr>
     <tr>
-      <th>2108</th>
-      <td>2020-11-02</td>
-      <td>0.097474</td>
+      <th>75%</th>
+      <td>0.217273</td>
+      <td>0.788600</td>
+      <td>0.106000</td>
+      <td>0.363158</td>
     </tr>
     <tr>
-      <th>2109</th>
-      <td>2020-11-03</td>
-      <td>0.342069</td>
-    </tr>
-    <tr>
-      <th>2110</th>
-      <td>2020-11-04</td>
-      <td>-0.175187</td>
-    </tr>
-    <tr>
-      <th>2111</th>
-      <td>2020-11-05</td>
-      <td>-0.066383</td>
-    </tr>
-    <tr>
-      <th>2112</th>
-      <td>2020-11-06</td>
-      <td>0.121970</td>
+      <th>max</th>
+      <td>0.736000</td>
+      <td>1.000000</td>
+      <td>0.405000</td>
+      <td>0.952300</td>
     </tr>
   </tbody>
 </table>
-<p>2113 rows × 2 columns</p>
 </div>
 
 
 
-This time around, we will take a different approach to formatting our graph. Let's use the `plot_date` function from `matplotlib`, which requires that we first convert our dates to the matplotlib.date format.
+We can now use the function we created earlier to visualize the sentiment over time and assess its trend.
 
 
 ```python
-# Converting the dates to matplotlib date format 
-# First, convert dates to datetime
-presidency_tweets_sent.date_dmy = presidency_tweets_sent.date_dmy.apply(pd.to_datetime)
-# Convert from datetime to matplotlib date format
-dates_presidency_tweets_sent = presidency_tweets_sent.date_dmy.to_list()
-dates_presidency_tweets_sent = mpl.dates.date2num(dates_presidency_tweets_sent) # These will be our x values
-
-# Gathering our y values
-compound_presidency_tweets_sent = presidency_tweets_sent.vader_compound.to_list()
-compound_presidency_tweets_sent = np.array(compound_presidency_tweets_sent)
+date_plotter_sns(presidency_tweets_sent, x = 'date_dmy' , y= 'vader_compound', 
+                 title='Trump Twitter Sentiment (2015-Present)',
+                 xlabel='Date', ylabel='VADER Compound Sentiment Score', increments = 'year')
 ```
+
+
+![png](trump_twitter_nlp_files/trump_twitter_nlp_98_0.png)
+
+
+While our regression curve suggests that Trump's sentiment on Twitter has gradually become more negative, the sentiment remains positive overall. 
+
+### Positive, Neutral, and Negative VADER Scores
+To compute the compound score, VADER gives each text source three scores: positive, neutral, and negative. Each score represents the proportion of the sentiment that is either positive, neutral, or negative, and thus these three scores should add up to 1 for each source. 
+
+In this next section, we will look at the average daily scores of Trump's tweets and use the VADER system to visualize positivity, neutrality, and negativity in the tweets over time. 
 
 
 ```python
-def date_plotter(df, x, y, title = None, xlabel = None, ylabel = None, labels = None, figsize = (24,12), fmt = 'r-', increments = 'month'):
-  # This function will help us to create appealing and effective graphs for our time-series data
-  # Input a dataframe and specify x and y columns (x column should contain dates) 
-  
-  # Preparing the data
-
-  # Save the df as a new variable
-  data = df
-
-  # Convert date values to datetime format
-  data[x] = data[x].apply(pd.to_datetime)
-  # Save the date values to a list
-  dates_list = data[x].to_list()
-  # Convert list of dates to numerical format; these will be the x values
-  dates = mpl.dates.date2num(dates_list)
-
-  # Gathering the y values
-  y_list = data[y].to_list()
-  y_values = np.array(y_list)
-
-  # Plotting
-
-  # Create figure, axes, and plot
-  fig, ax = plt.subplots(figsize = figsize)
-  ax.plot_date(x = dates, y = y_values, fmt = fmt)
-
-  # Formatting dates
-  years = mpl.dates.YearLocator()   # every year
-  months = mpl.dates.MonthLocator()  # every month
-  years_fmt = mpl.dates.DateFormatter('%Y')
-  months_fmt = mpl.dates.DateFormatter('%Y-%m')
-
-  # Formatting the ticks by months or years
-  # Creating a list of options for increments to ensure proper input
-  increment_options = ['month', 'year']
-  if increments not in increment_options:
-    raise ValueError("Invalid increment type. Expected one of: {}".format(increment_options))
-  
-  if increments == 'month':
-    ax.xaxis.set_major_locator(months)
-    ax.xaxis.set_major_formatter(months_fmt)
-  elif increments == 'year':
-    ax.xaxis.set_major_locator(years)
-    ax.xaxis.set_major_formatter(years_fmt)
-
-  # Setting x-axis limits  
-  datemin = dates[0]
-  datemax = dates[-1]
-  ax.set_xlim(datemin, datemax)
-
-  # Formatting coordinate grid
-  if increments == 'month':
-    ax.format_xdata = mpl.dates.DateFormatter('%Y-%m')
-  elif increments == 'year':
-    ax.format_xdata = mpl.dates.DateFormatter('%Y')
-  
-  ax.grid(True)
-
-  # Additional formatting
-  ax.set_title(title)
-  ax.set_ylabel(ylabel)
-  ax.set_xlabel(xlabel)
-  plt.legend(labels, loc='topleft')
-
-  # X-axis formatting
-  fig.autofmt_xdate()
-
-  plt.show()
+# We can now use the multiplotter function to create a 
+# graph that represents the positive, neutral, and negative sentiments
+multiplotter(presidency_tweets_sent, x = 'date_dmy' ,
+             y= ['vader_pos', 'vader_neu', 'vader_neg'])
 ```
 
 
-```python
-date_plotter(presidency_tweets_sent, 'date_dmy', 'vader_compound', increments='year', 
-             title = 'Trump Tweet Sentiment (2015-Present)', xlabel='Date', ylabel='VADER Compound Sentiment Score', labels = 'VADER Compound Score')
-```
+![png](trump_twitter_nlp_files/trump_twitter_nlp_101_0.png)
 
 
-![png](trump_twitter_analysis_files/trump_twitter_analysis_87_0.png)
+Visualizing the components that make up the VADER component score allows us to see under the hood and understand why Trump's tweets have been labeled as slightly positive overall. 
 
-
-
-```python
-! jupyter nbconvert --to markdown trump_twitter_analysis.ipynb
-```
-
-    [NbConvertApp] Converting notebook trump_twitter_analysis.ipynb to markdown
-    [NbConvertApp] Support files will be in trump_twitter_analysis_files\
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Making directory trump_twitter_analysis_files
-    [NbConvertApp] Writing 81871 bytes to trump_twitter_analysis.md
-    
+The data before us suggests that overall, the daily average sentiment is quite neutral. On the other hand, the overall probability of tweets being positive or negative is relatively low. 
 
 
 ```python
