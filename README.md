@@ -1,6 +1,6 @@
 # Analyzing Trump's Tweets Using Natural Language Processing
 
-![](figures/twitter_post.jpg)
+![jpg](figures/twitter_post.jpg)
 
 There is no doubt that **Donald Trump has been a very controversial and polarizing figure in the United States**, especially since he announced his run for the presidency in 2015.
 
