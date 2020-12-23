@@ -1,4 +1,5 @@
 # Analyzing Trump's Tweets Using Natural Language Processing
+[Read this post on my website](https://naingthet.github.io/posts/trump/trump/)
 
 ![jpg](figures/twitter_post.jpg)
 
