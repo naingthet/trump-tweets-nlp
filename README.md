@@ -495,7 +495,7 @@ date_plotter(tweets_my, 'date_my', 'count', xlabel='Year', ylabel='Tweets per Mo
 ```
 
 
-png](/figures/trump_twitter_nlp_33_0.png)
+![png](figures/trump_twitter_nlp_33_0.png)
 
 
 **Note:** Although the x-axis labels represent years, both the x and y values represent **monthly** tweets. We have simply labeled the x-axis with years to minimize clutter.
@@ -519,7 +519,7 @@ date_plotter(tweets_day, 'date_dmy', 'count', xlabel = 'Date', ylabel= 'Tweets p
 ```
 
 
-![png](/figures/trump_twitter_nlp_37_0.png)
+![png](figures/trump_twitter_nlp_37_0.png)
 
 
 Looking at Trump's tweets per day, we see a very similar trend (as we would expect). However, the daily tweet counts provide more granular insight into Trump's behavior on Twitter. We can see that Trump's tweet count can vary significantly from day to day, as there are handful of days on which he sent out more than 100 tweets.
@@ -570,7 +570,7 @@ plt.show()
 ```
 
 
-![png](/figures/trump_twitter_nlp_44_0.png)
+![png](figures/trump_twitter_nlp_44_0.png)
 
 
 It appears that Trump tweets more during the week, but aside from this we are not learning much from this visualization. Let's try to see if we can find more valuable insights by adding hour of day into this analysis.
@@ -597,7 +597,7 @@ plt.show()
 ```
 
 
-![png](/figures/trump_twitter_nlp_47_0.png)
+![png](figures/trump_twitter_nlp_47_0.png)
 
 
 This is more interesting. It appears that Trump does most of his tweeting during the work week and between the hours of 7 AM and 4 PM. This heatmap helps us to visualize the density of the tweet activity within this period, but it also shows us that aside from the early hours of the morning, Trump is generally quite active.
@@ -629,7 +629,7 @@ plt.show()
 ```
 
 
-![png](/figures/trump_twitter_nlp_52_0.png)
+![png](figures/trump_twitter_nlp_52_0.png)
 
 
 ### Deleted Tweets over Time
@@ -663,7 +663,7 @@ plt.show()
 ```
 
 
-![png](/figures/trump_twitter_nlp_55_0.png)
+![png](figures/trump_twitter_nlp_55_0.png)
 
 
 Interesting! We can now see that it is very rare for Trump to delete his tweets. However, deletions have increased in recent years. This is unsurprising, as presidents have staff and advisors who will encourage them to delete unpopular opinions.
@@ -699,7 +699,7 @@ plt.show()
 ```
 
 
-![png](/figures/trump_twitter_nlp_59_0.png)
+![png](figures/trump_twitter_nlp_59_0.png)
 
 
 Overall, it appears that the majority of Trump's tweets are original. However, more recently, it appears that Trump retweets roughly as frequently as he writes his own tweets.
@@ -979,7 +979,7 @@ plt.show()
 ```
 
 
-![png](/figures/trump_twitter_nlp_92_0.png)
+![png](figures/trump_twitter_nlp_92_0.png)
 
 
 ### VADER Sentiment Analysis
@@ -1040,7 +1040,7 @@ date_plotter(dt_sentiment_dmy, 'date_dmy', 'vader_compound', increments='year', 
 ```
 
 
-![png](/figures/trump_twitter_nlp_99_0.png)
+![png](figures/trump_twitter_nlp_99_0.png)
 
 
 #### Presidential Years (2015-Present)
@@ -1092,7 +1092,7 @@ date_plotter_sns(presidency_tweets_sent, x = 'date_dmy' , y= 'vader_compound',
 ```
 
 
-![png](/figures/trump_twitter_nlp_105_0.png)
+![png](figures/trump_twitter_nlp_105_0.png)
 
 
 While our regression curve suggests that Trump's sentiment on Twitter has gradually become more negative, the sentiment remains positive overall.
@@ -1110,7 +1110,7 @@ multiplotter(presidency_tweets_sent, x = 'date_dmy' ,
 ```
 
 
-![png](/figures/trump_twitter_nlp_108_0.png)
+![png](figures/trump_twitter_nlp_108_0.png)
 
 
 Visualizing the components that make up the VADER component score allows us to see under the hood and understand why Trump's tweets have been labeled as slightly positive overall.
@@ -1130,7 +1130,7 @@ plt.title('Distribution of Compound Vader Scores for Trump Tweets (2015-Present)
 ```
 
 
-![png](/figures/trump_twitter_nlp_110_0.png)
+![png](figures/trump_twitter_nlp_110_0.png)
 
 
 
@@ -1145,7 +1145,7 @@ plt.title('Distribution of Positive and Negative Vader Scores for Trump Tweets (
 ```
 
 
-![png](/figures/trump_twitter_nlp_111_0.png)
+![png](figures/trump_twitter_nlp_111_0.png)
 
 
 Our histograms support our findings from our time series analysis, showing that Trump's tweets are generally more positive than they are negative in sentiment.
